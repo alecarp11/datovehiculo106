@@ -420,6 +420,9 @@
 
       const app = document.getElementById("app");
 
+      // Establece la contraseña para editar
+      const correctPassword = "106";
+
       // Función para generar URL QR con texto codificado
       function generateQR(text) {
         return (
@@ -535,10 +538,9 @@
             const doorDiv = btn.closest(".door");
             const doorContentDiv = doorDiv.querySelector(".door-content");
             const doorIndex = parseInt(doorDiv.getAttribute("data-door-index"));
-            const currentContent = unit.doors[doorIndex].content;
-
+            
+            // Si ya está en modo de edición, simplemente guarda
             if (doorContentDiv.contentEditable === "true") {
-              // Guardar cambios
               const newContent = doorContentDiv.textContent.trim();
               unit.doors[doorIndex].content = newContent;
               doorContentDiv.contentEditable = "false";
@@ -546,12 +548,19 @@
               doorContentDiv.style.padding = "0";
               btn.innerHTML = '<i class="fas fa-edit"></i> Editar';
             } else {
-              // Habilitar edición
-              doorContentDiv.contentEditable = "true";
-              doorContentDiv.focus();
-              doorContentDiv.style.border = "1px solid #1976d2";
-              doorContentDiv.style.padding = "5px";
-              btn.innerHTML = '<i class="fas fa-save"></i> Guardar';
+              // Si no está en modo de edición, pide la contraseña
+              const password = prompt("Por favor, ingrese la contraseña para editar:");
+              if (password === correctPassword) {
+                // Habilitar edición si la contraseña es correcta
+                doorContentDiv.contentEditable = "true";
+                doorContentDiv.focus();
+                doorContentDiv.style.border = "1px solid #1976d2";
+                doorContentDiv.style.padding = "5px";
+                btn.innerHTML = '<i class="fas fa-save"></i> Guardar';
+              } else if (password !== null) {
+                // Muestra un mensaje si la contraseña es incorrecta (y el usuario no canceló)
+                alert("Contraseña incorrecta. No se puede editar.");
+              }
             }
           });
         });
@@ -581,5 +590,7 @@
 
       init();
     </script>
+  </body>
+</html>
   </body>
 </html>
