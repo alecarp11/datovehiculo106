@@ -8,6 +8,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
       * {
         margin: 0;
@@ -226,7 +227,7 @@
       }
 
       /* Estilos para la vista de QR */
-      .qr-page-content {
+      .qr-page-container {
         padding: 2rem;
         background-color: rgba(255, 255, 255, 0.95);
         border-radius: 15px;
@@ -235,22 +236,65 @@
         text-align: left;
         margin-top: 40px;
       }
-      .qr-page-content h2 {
+      .qr-page-container h2 {
         color: #1976d2;
         margin-bottom: 1rem;
         font-size: 1.8rem;
+        text-align: center;
       }
-      .qr-page-content ul {
+      .qr-page-container h3 {
+        color: #d32f2f;
+      }
+      .qr-page-container ul {
         margin: 0;
         padding-left: 20px;
       }
-      .qr-page-content li {
+      .qr-page-container li {
         color: #555;
         font-size: 1.1rem;
         margin-bottom: 0.5rem;
       }
+      .qr-options {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 20px;
+      }
+      .qr-options button {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      #viewContentBtn {
+        background-color: #1976d2;
+        color: #ffcc00;
+      }
+      #downloadExcelBtn {
+        background-color: #4caf50;
+        color: white;
+      }
 
-      @media (max-width: 768px) {
+      /* MEDIA QUERIES PARA ADAPTABILIDAD */
+      @media (min-width: 768px) {
+        .door {
+          flex-direction: row; /* En computadoras, se mostrarán en fila */
+          align-items: center;
+        }
+
+        .door-info {
+          flex: 1;
+        }
+
+        .qr-code {
+          flex: 0 0 140px;
+        }
+      }
+
+      @media (max-width: 767px) {
         .units-list {
           grid-template-columns: 1fr;
         }
@@ -264,8 +308,9 @@
         }
 
         .door {
-          flex-direction: column;
+          flex-direction: column; /* En celulares, se mostrarán en columna */
           align-items: flex-start;
+          text-align: left;
         }
 
         .qr-code {
@@ -556,7 +601,9 @@
       function generateQR(unitId, doorIndex) {
         const baseUrl = window.location.origin + window.location.pathname;
         const qrContent = `${baseUrl}?unit=${unitId}&door=${doorIndex}`;
-        return `https://quickchart.io/qr?text=${encodeURIComponent(qrContent)}&size=120`;
+        return `https://quickchart.io/qr?text=${encodeURIComponent(
+          qrContent
+        )}&size=120`;
       }
 
       function renderUnitsList() {
@@ -665,17 +712,22 @@
             const doorDiv = btn.closest(".door");
             const doorContentDiv = doorDiv.querySelector(".door-content");
             const doorIndex = parseInt(doorDiv.getAttribute("data-door-index"));
-            
-            // Si ya está en modo de edición, simplemente guarda y sale del modo
+
             if (doorContentDiv.contentEditable === "true") {
-              const newContent = doorContentDiv.querySelector("textarea").value.split('\n').filter(Boolean).map(item => item.trim());
+              const newContent = doorContentDiv
+                .querySelector("textarea")
+                .value.split("\n")
+                .filter(Boolean)
+                .map((item) => item.trim());
               unit.doors[doorIndex].content = newContent;
               saveData();
               renderUnitPage(unitId);
             } else {
-              const password = prompt("Por favor, ingrese la contraseña para editar:");
+              const password = prompt(
+                "Por favor, ingrese la contraseña para editar:"
+              );
               if (password === correctPassword) {
-                const currentContentText = unit.doors[doorIndex].content.join('\n');
+                const currentContentText = unit.doors[doorIndex].content.join("\n");
                 doorContentDiv.innerHTML = `<textarea>${currentContentText}</textarea>`;
                 doorContentDiv.querySelector("textarea").focus();
                 btn.innerHTML = '<i class="fas fa-save"></i> Guardar';
@@ -687,18 +739,53 @@
         });
       }
       
+      function renderQRPageOptions(unitId, doorIndex) {
+        const unit = units[unitId];
+        if (!unit || !unit.doors[doorIndex]) {
+          renderUnitsList();
+          return;
+        }
+
+        const door = unit.doors[doorIndex];
+        document.title = `Opciones - ${door.title}`;
+
+        app.innerHTML = `
+          <div class="qr-page-container">
+            <h2>${door.title}</h2>
+            <p style="text-align:center;">Seleccione una opción para ver el contenido:</p>
+            <div class="qr-options">
+                <button id="viewContentBtn"><i class="fas fa-eye"></i> Ver Contenido</button>
+                <button id="downloadExcelBtn"><i class="fas fa-file-excel"></i> Descargar Excel</button>
+            </div>
+            <button class="back-button" onclick="window.location.href='${window.location.origin + window.location.pathname}'" style="margin-top: 20px;"><i class="fas fa-arrow-left"></i> Volver a la Lista</button>
+          </div>
+          <div class="footer" style="width: 100%;">
+            <p>Villa Maria del Triunfo 106 - Compañía de Bomberos Voluntarios</p>
+            <p>Sistema de Gestión de Equipos © 2023</p>
+          </div>
+        `;
+
+        document.getElementById("viewContentBtn").addEventListener("click", () => {
+            renderQRPage(unitId, doorIndex);
+        });
+
+        document.getElementById("downloadExcelBtn").addEventListener("click", () => {
+            downloadExcel(unit, door);
+        });
+      }
+
       function renderQRPage(unitId, doorIndex) {
         const unit = units[unitId];
         if (!unit || !unit.doors[doorIndex]) {
             renderUnitsList();
             return;
         }
-
+        
         const door = unit.doors[doorIndex];
         document.title = `${door.title} - ${unit.name}`;
-        
+
         app.innerHTML = `
-            <div class="qr-page-content">
+            <div class="qr-page-container">
                 <button class="back-button" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> Volver</button>
                 <h2>${door.title}</h2>
                 <p><strong>Unidad:</strong> ${unit.name}</p>
@@ -713,14 +800,34 @@
             </div>
         `;
       }
+      
+      function downloadExcel(unit, door) {
+          const data = [
+              ["Unidad", unit.name],
+              ["Puerta", door.title],
+              [],
+              ["Contenido"]
+          ];
+
+          door.content.forEach(item => {
+              data.push([item]);
+          });
+
+          const ws = XLSX.utils.aoa_to_sheet(data);
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "Equipamiento");
+
+          const filename = `${unit.name.replace(/\s/g, '_')}_${door.title.replace(/\s/g, '_')}.xlsx`;
+          XLSX.writeFile(wb, filename);
+      }
 
       window.addEventListener("popstate", (event) => {
         const params = new URLSearchParams(window.location.search);
         const unitId = params.get("unit");
         const doorIndex = params.get("door");
-
+        
         if (unitId && doorIndex) {
-            renderQRPage(unitId, doorIndex);
+          renderQRPageOptions(unitId, doorIndex);
         } else if (unitId) {
             renderUnitPage(unitId);
         } else {
@@ -733,9 +840,9 @@
         const params = new URLSearchParams(window.location.search);
         const unitId = params.get("unit");
         const doorIndex = params.get("door");
-
+        
         if (unitId && doorIndex) {
-            renderQRPage(unitId, doorIndex);
+            renderQRPageOptions(unitId, doorIndex);
         } else if (unitId && units[unitId]) {
             renderUnitPage(unitId);
         } else {
