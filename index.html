@@ -281,7 +281,7 @@
       /* MEDIA QUERIES PARA ADAPTABILIDAD */
       @media (min-width: 768px) {
         .door {
-          flex-direction: row; /* En computadoras, se mostrarán en fila */
+          flex-direction: row;
           align-items: center;
         }
 
@@ -308,7 +308,7 @@
         }
 
         .door {
-          flex-direction: column; /* En celulares, se mostrarán en columna */
+          flex-direction: column;
           align-items: flex-start;
           text-align: left;
         }
@@ -599,8 +599,10 @@
       }
 
       function generateQR(unitId, doorIndex) {
-        const baseUrl = window.location.origin + window.location.pathname;
-        const qrContent = `${baseUrl}?unit=${unitId}&door=${doorIndex}`;
+        // Usamos window.location.href para obtener la ruta completa,
+        // y agregamos un fragmento (#) en lugar de parámetros de URL (?)
+        const baseUrl = window.location.href.split('#')[0];
+        const qrContent = `${baseUrl}#unit=${unitId}&door=${doorIndex}`;
         return `https://quickchart.io/qr?text=${encodeURIComponent(
           qrContent
         )}&size=120`;
@@ -642,7 +644,7 @@
           card.addEventListener("click", () => {
             const unitId = card.getAttribute("data-id");
             renderUnitPage(unitId);
-            history.pushState({ unitId }, "", `?unit=${unitId}`);
+            history.pushState({ unitId }, "", `#unit=${unitId}`);
           });
         });
       }
@@ -757,7 +759,7 @@
                 <button id="viewContentBtn"><i class="fas fa-eye"></i> Ver Contenido</button>
                 <button id="downloadExcelBtn"><i class="fas fa-file-excel"></i> Descargar Excel</button>
             </div>
-            <button class="back-button" onclick="window.location.href='${window.location.origin + window.location.pathname}'" style="margin-top: 20px;"><i class="fas fa-arrow-left"></i> Volver a la Lista</button>
+            <button class="back-button" onclick="window.history.back()" style="margin-top: 20px;"><i class="fas fa-arrow-left"></i> Volver a la Lista</button>
           </div>
           <div class="footer" style="width: 100%;">
             <p>Villa Maria del Triunfo 106 - Compañía de Bomberos Voluntarios</p>
@@ -821,38 +823,36 @@
           XLSX.writeFile(wb, filename);
       }
 
-      window.addEventListener("popstate", (event) => {
-        const params = new URLSearchParams(window.location.search);
+      // Detectar cambios en el fragmento de la URL
+      window.addEventListener("hashchange", () => {
+        handleUrlFragment();
+      });
+
+      function handleUrlFragment() {
+        const hash = window.location.hash.substring(1); // Elimina el '#'
+        const params = new URLSearchParams(hash);
         const unitId = params.get("unit");
         const doorIndex = params.get("door");
-        
+
         if (unitId && doorIndex) {
           renderQRPageOptions(unitId, doorIndex);
         } else if (unitId) {
-            renderUnitPage(unitId);
+          renderUnitPage(unitId);
         } else {
-            renderUnitsList();
+          renderUnitsList();
         }
-      });
+      }
 
+      // Al cargar la página, verificamos si hay un fragmento de URL
       function init() {
         loadData();
-        const params = new URLSearchParams(window.location.search);
-        const unitId = params.get("unit");
-        const doorIndex = params.get("door");
-        
-        if (unitId && doorIndex) {
-            renderQRPageOptions(unitId, doorIndex);
-        } else if (unitId && units[unitId]) {
-            renderUnitPage(unitId);
-        } else {
-            renderUnitsList();
-        }
+        handleUrlFragment();
       }
 
       init();
     </script>
   </body>
+</html>
 </html>
 
       
