@@ -25,7 +25,7 @@
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 900px;
       margin: 0 auto;
     }
 
@@ -51,95 +51,115 @@
       margin-bottom: 20px;
     }
 
-    .units-container {
+    .units-list {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 25px;
       margin-bottom: 40px;
     }
 
-    .unit {
+    .unit-card {
       background-color: rgba(255, 255, 255, 0.95);
       border-radius: 15px;
       overflow: hidden;
       box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
-      transition: transform 0.3s ease;
-    }
-
-    .unit:hover {
-      transform: translateY(-5px);
-    }
-
-    .unit-header {
-      padding: 20px;
-      background: linear-gradient(to right, #d32f2f, #f44336);
-      color: white;
       cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      transition: transform 0.3s ease;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .unit-card:hover {
+      transform: translateY(-5px);
+      background: #fff8e1;
     }
 
     .unit-title {
       font-size: 1.4rem;
       font-weight: bold;
+      color: #d32f2f;
+      margin-bottom: 8px;
     }
 
     .unit-type {
       font-size: 1rem;
       opacity: 0.9;
+      color: #1976d2;
     }
 
-    .doors-container {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.5s ease;
-    }
+    /* Página unidad */
 
-    .doors-container.active {
-      max-height: 2000px;
+    .back-button {
+      background-color: #1976d2;
+      color: #ffcc00;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 3px 6px rgba(25, 118, 210, 0.5);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      user-select: none;
+    }
+    .back-button:hover {
+      background-color: #145ea8;
+      color: #fff200;
+      box-shadow: 0 5px 10px rgba(20, 94, 168, 0.7);
     }
 
     .door {
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
       padding: 20px;
-      border-bottom: 1px solid #eee;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
       position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 20px;
     }
 
-    .door:last-child {
-      border-bottom: none;
+    .door-info {
+      flex: 1 1 300px;
     }
 
     .door-title {
       font-weight: bold;
       color: #1976d2;
       margin-bottom: 10px;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
     }
 
     .door-content {
-      margin-bottom: 15px;
       color: #555;
+      font-size: 1rem;
+      white-space: pre-wrap;
     }
 
     .qr-code {
+      flex: 0 0 140px;
       text-align: center;
-      margin-top: 15px;
-      padding: 10px;
       background-color: #f9f9f9;
-      border-radius: 8px;
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
     .qr-code img {
       max-width: 120px;
       border: 1px solid #ddd;
-      border-radius: 8px;
+      border-radius: 12px;
       padding: 5px;
       background-color: white;
     }
 
     .qr-text {
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       margin-top: 8px;
       color: #777;
     }
@@ -163,6 +183,7 @@
       gap: 6px;
       font-size: 0.9rem;
       user-select: none;
+      z-index: 10;
     }
     .edit-btn:hover {
       background-color: #145ea8;
@@ -180,7 +201,7 @@
     }
 
     @media (max-width: 768px) {
-      .units-container {
+      .units-list {
         grid-template-columns: 1fr;
       }
 
@@ -191,232 +212,318 @@
       h2 {
         font-size: 1.5rem;
       }
+
+      .door {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .qr-code {
+        flex: none;
+        width: 100%;
+        margin-top: 15px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Villa Maria del Triunfo 106</h1>
-      <h2>Compañía de Bomberos</h2>
-      <p>Sistema de gestión de unidades y equipamiento</p>
-    </header>
-
-    <div class="units-container">
-      <!-- MAQUINA 106.01 -->
-      <div class="unit">
-        <div class="unit-header" onclick="toggleDoors('maquina106')">
-          <div>
-            <div class="unit-title">MAQUINA 106.01</div>
-            <div class="unit-type">Unidad principal de bomberos</div>
-          </div>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="doors-container" id="maquina106">
-          <div class="door">
-            <div class="door-title">Puerta 1 - Equipos de Respiración</div>
-            <div class="door-content">
-              Máscaras de oxígeno, tanques de aire comprimido y reguladores de presión.
-            </div>
-            <div class="qr-code">
-              <img
-                src="https://quickchart.io/qr?text=MAQUINA106.01-PUERTA1-EQUIPOS-RESPIRACION&size=120"
-                alt="Código QR Puerta 1"
-              />
-              <div class="qr-text">Escanea para ver detalles del equipo</div>
-            </div>
-            <button class="edit-btn" onclick="editDoor(event, 'MAQUINA 106.01', 1)">
-              <i class="fas fa-edit"></i> Editar
-            </button>
-          </div>
-          <div class="door">
-            <div class="door-title">Puerta 2 - Mangueras y Acoples</div>
-            <div class="door-content">Mangueras de alta presión, acoples rápidos y lanzas de agua.</div>
-            <div class="qr-code">
-              <img
-                src="https://quickchart.io/qr?text=MAQUINA106.01-PUERTA2-MANGUERAS-ACOPLES&size=120"
-                alt="Código QR Puerta 2"
-              />
-              <div class="qr-text">Escanea para ver detalles del equipo</div>
-            </div>
-            <button class="edit-btn" onclick="editDoor(event, 'MAQUINA 106.01', 2)">
-              <i class="fas fa-edit"></i> Editar
-            </button>
-          </div>
-          <div class="door">
-            <div class="door-title">Puerta 3 - Herramientas de Rescate</div>
-            <div class="door-content">
-              Hidráulicas, motosierras, herramientas de forcé y equipos de estabilización.
-            </div>
-            <div class="qr-code">
-              <img
-                src="https://quickchart.io/qr?text=MAQUINA106.01-PUERTA3-HERRAMIENTAS-RESCATE&size=120"
-                alt="Código QR Puerta 3"
-              />
-              <div class="qr-text">Escanea para ver detalles del equipo</div>
-            </div>
-            <button class="edit-btn" onclick="editDoor(event, 'MAQUINA 106.01', 3)">
-              <i class="fas fa-edit"></i> Editar
-            </button>
-          </div>
-          <!-- Agrega más puertas según sea necesario -->
-        </div>
-      </div>
-
-      <!-- CISTERNA 106 -->
-      <div class="unit">
-        <div class="unit-header" onclick="toggleDoors('cisterna106')">
-          <div>
-            <div class="unit-title">CISTERNA 106</div>
-            <div class="unit-type">Unidad de abastecimiento de agua</div>
-          </div>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="doors-container" id="cisterna106">
-          <div class="door">
-            <div class="door-title">Puerta Principal - Sistema de Bombeo</div>
-            <div class="door-content">
-              Bomba centrífuga de alta capacidad, mangueras de succión, válvulas de control y sistema de espumógeno.
-            </div>
-            <div class="qr-code">
-              <img
-                src="https://quickchart.io/qr?text=CISTERNA106-PUERTA1-SISTEMA-BOMBEO&size=120"
-                alt="Código QR Cisterna"
-              />
-              <div class="qr-text">Escanea para ver detalles del equipo</div>
-            </div>
-            <button class="edit-btn" onclick="editDoor(event, 'CISTERNA 106', 1)">
-              <i class="fas fa-edit"></i> Editar
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- RESCATE LIGERA 106 -->
-      <div class="unit">
-        <div class="unit-header" onclick="toggleDoors('rescateLigera106')">
-          <div>
-            <div class="unit-title">RESCATE LIGERA 106</div>
-            <div class="unit-type">Unidad de respuesta rápida</div>
-          </div>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="doors-container" id="rescateLigera106">
-          <div class="door">
-            <div class="door-title">Puerta Principal - Equipos de Rescate Liviano</div>
-            <div class="door-content">
-              Equipos de primeros auxilios, herramientas manuales, cuerdas, iluminación portátil y equipos de comunicación.
-            </div>
-            <div class="qr-code">
-              <img
-                src="https://quickchart.io/qr?text=RESCATE-LIGERA106-PUERTA1-EQUIPOS-LIVIANOS&size=120"
-                alt="Código QR Rescate Ligera"
-              />
-              <div class="qr-text">Escanea para ver detalles del equipo</div>
-            </div>
-            <button class="edit-btn" onclick="editDoor(event, 'RESCATE LIGERA 106', 1)">
-              <i class="fas fa-edit"></i> Editar
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- RESCATE 106 -->
-      <div class="unit">
-        <div class="unit-header" onclick="toggleDoors('rescate106')">
-          <div>
-            <div class="unit-title">RESCATE 106</div>
-            <div class="unit-type">Unidad de rescate pesado</div>
-          </div>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="doors-container" id="rescate106">
-          <div class="door">
-            <div class="door-title">Puerta 1 - Herramientas Hidráulicas</div>
-            <div class="door-content">
-              Cizallas, expansores, cilindros y power units para rescate vehicular.
-            </div>
-            <div class="qr-code">
-              <img
-                src="https://quickchart.io/qr?text=RESCATE106-PUERTA1-HERRAMIENTAS-HIDRAULICAS&size=120"
-                alt="Código QR Puerta 1"
-              />
-              <div class="qr-text">Escanea para ver detalles del equipo</div>
-            </div>
-            <button class="edit-btn" onclick="editDoor(event, 'RESCATE 106', 1)">
-              <i class="fas fa-edit"></i> Editar
-            </button>
-          </div>
-          <!-- Puedes agregar más puertas aquí con botón editar -->
-        </div>
-      </div>
-
-      <!-- AMBULANCIA 106 -->
-      <div class="unit">
-        <div class="unit-header" onclick="toggleDoors('ambulancia106')">
-          <div>
-            <div class="unit-title">AMBULANCIA 106</div>
-            <div class="unit-type">Unidad de atención médica</div>
-          </div>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="doors-container" id="ambulancia106">
-          <div class="door">
-            <div class="door-title">Puerta Principal - Equipamiento Médico</div>
-            <div class="door-content">
-              Camilla, botiquines de avanzada, equipos de oxígeno, monitor desfibrilador y material de inmovilización.
-            </div>
-            <div class="qr-code">
-              <img
-                src="https://quickchart.io/qr?text=AMBULANCIA106-PUERTA1-EQUIPAMIENTO-MEDICO&size=120"
-                alt="Código QR Ambulancia"
-              />
-              <div class="qr-text">Escanea para ver detalles del equipo</div>
-            </div>
-            <button class="edit-btn" onclick="editDoor(event, 'AMBULANCIA 106', 1)">
-              <i class="fas fa-edit"></i> Editar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="footer">
-      <p>Villa Maria del Triunfo 106 - Compañía de Bomberos Voluntarios</p>
-      <p>Sistema de Gestión de Equipos © 2023</p>
-    </div>
+  <div class="container" id="app">
+    <!-- Contenido dinámico aquí -->
   </div>
 
   <script>
-    function toggleDoors(unitId) {
-      const doorsContainer = document.getElementById(unitId);
-      doorsContainer.classList.toggle("active");
+    // Datos de unidades y puertas
+    const units = {
+      maquina106: {
+        name: "MAQUINA 106.01",
+        type: "Unidad principal de bomberos",
+        doors: [
+          {
+            title: "Puerta 1 - Equipos de Respiración",
+            content:
+              "Máscaras de oxígeno, tanques de aire comprimido y reguladores de presión.",
+          },
+          {
+            title: "Puerta 2 - Mangueras y Acoples",
+            content: "Mangueras de alta presión, acoples rápidos y lanzas de agua.",
+          },
+          {
+            title: "Puerta 3 - Herramientas de Rescate",
+            content:
+              "Hidráulicas, motosierras, herramientas de forcé y equipos de estabilización.",
+          },
+          {
+            title: "Puerta 4 - Equipos de Comunicación",
+            content:
+              "Radios portátiles, repetidoras y equipos de comunicación de emergencia.",
+          },
+          {
+            title: "Puerta 5 - Equipos Médicos",
+            content:
+              "Botiquines de primeros auxilios, camillas, collarines y equipos de inmovilización.",
+          },
+          {
+            title: "Puerta 6 - Iluminación",
+            content:
+              "Focus de iluminación, generadores eléctricos y equipos de alumbrado.",
+          },
+          {
+            title: "Puerta 7 - Escalas y Cuerdas",
+            content:
+              "Escalas de gancho, cuerdas de rescate, arneses y equipos de altura.",
+          },
+          {
+            title: "Puerta 8 - Equipos de Detección",
+            content:
+              "Detectores de gas, térmicos, cámaras térmicas y equipos de medición.",
+          },
+          {
+            title: "Puerta 9 - Material Diverso",
+            content:
+              "Herramientas manuales, equipos de limpieza y material de mantenimiento.",
+          },
+          {
+            title: "Puerta 10 - Equipos de Protección",
+            content:
+              "Trajes de protección química, guantes, botas y cascos de seguridad.",
+          },
+        ],
+      },
+      cisterna106: {
+        name: "CISTERNA 106",
+        type: "Unidad de abastecimiento de agua",
+        doors: [
+          {
+            title: "Puerta Principal - Sistema de Bombeo",
+            content:
+              "Bomba centrífuga de alta capacidad, mangueras de succión, válvulas de control y sistema de espumógeno.",
+          },
+        ],
+      },
+      rescateLigera106: {
+        name: "RESCATE LIGERA 106",
+        type: "Unidad de respuesta rápida",
+        doors: [
+          {
+            title: "Puerta Principal - Equipos de Rescate Liviano",
+            content:
+              "Equipos de primeros auxilios, herramientas manuales, cuerdas, iluminación portátil y equipos de comunicación.",
+          },
+        ],
+      },
+      rescate106: {
+        name: "RESCATE 106",
+        type: "Unidad de rescate pesado",
+        doors: [
+          {
+            title: "Puerta 1 - Herramientas Hidráulicas",
+            content:
+              "Cizallas, expansores, cilindros y power units para rescate vehicular.",
+          },
+          {
+            title: "Puerta 2 - Equipos de Estabilización",
+            content:
+              "Gatos, puntales, cuñas y sistemas de estabilización vehicular.",
+          },
+          {
+            title: "Puerta 3 - Equipos de Elevación",
+            content:
+              "Gatos de alto tonelaje, sistemas de elevación por aire y equipos de levante.",
+          },
+          {
+            title: "Puerta 4 - Equipos de Iluminación",
+            content:
+              "Torres de iluminación, focus de alta intensidad y generadores eléctricos.",
+          },
+          {
+            title: "Puerta 5 - Equipos de Corte",
+            content:
+              "Motosierras, equipos de oxicorte y herramientas de corte especializadas.",
+          },
+          {
+            title: "Puerta 6 - Equipos de Comunicación",
+            content:
+              "Radios de largo alcance, sistemas de intercomunicación y equipos de enlace.",
+          },
+          {
+            title: "Puerta 7 - Equipos de Detección",
+            content:
+              "Detectores de gases, cámaras térmicas y equipos de medición ambiental.",
+          },
+          {
+            title: "Puerta 8 - Equipos de Ventilación",
+            content:
+              "Ventiladores de presión positiva, extractores de humo y equipos de renovación de aire.",
+          },
+          {
+            title: "Puerta 9 - Equipos de Sostenimiento",
+            content:
+              "Material de apuntalamiento, sistemas de entibación y equipos de soporte estructural.",
+          },
+          {
+            title: "Puerta 10 - Equipos Especializados",
+            content:
+              "Material para rescate en altura, espacios confinados y situaciones especiales.",
+          },
+        ],
+      },
+      ambulancia106: {
+        name: "AMBULANCIA 106",
+        type: "Unidad de atención médica",
+        doors: [
+          {
+            title: "Puerta Principal - Equipamiento Médico",
+            content:
+              "Camilla, botiquines de avanzada, equipos de oxígeno, monitor desfibrilador y material de inmovilización.",
+          },
+        ],
+      },
+    };
 
-      const icon = doorsContainer.previousElementSibling.querySelector("i");
-      if (doorsContainer.classList.contains("active")) {
-        icon.classList.remove("fa-chevron-down");
-        icon.classList.add("fa-chevron-up");
+    const app = document.getElementById("app");
+
+    // Función para generar URL QR con texto codificado
+    function generateQR(text) {
+      return (
+        "https://quickchart.io/qr?text=" +
+        encodeURIComponent(text) +
+        "&size=120"
+      );
+    }
+
+    // Renderiza la lista principal de unidades
+    function renderUnitsList() {
+      document.title = "Villa Maria del Triunfo 106 - Compañía de Bomberos";
+      app.innerHTML = `
+        <header>
+          <h1>Villa Maria del Triunfo 106</h1>
+          <h2>Compañía de Bomberos</h2>
+          <p>Sistema de gestión de unidades y equipamiento</p>
+        </header>
+        <div class="units-list">
+          ${Object.entries(units)
+            .map(
+              ([id, unit]) => `
+            <div class="unit-card" data-id="${id}">
+              <div class="unit-title">${unit.name}</div>
+              <div class="unit-type">${unit.type}</div>
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+        <div class="footer">
+          <p>Villa Maria del Triunfo 106 - Compañía de Bomberos Voluntarios</p>
+          <p>Sistema de Gestión de Equipos © 2023</p>
+        </div>
+      `;
+
+      // Añadir evento click a cada tarjeta para ir a página unidad
+      document.querySelectorAll(".unit-card").forEach((card) => {
+        card.addEventListener("click", () => {
+          const unitId = card.getAttribute("data-id");
+          renderUnitPage(unitId);
+          history.pushState({ unitId }, "", `?unit=${unitId}`);
+        });
+      });
+    }
+
+    // Renderiza la página de una unidad específica
+    function renderUnitPage(unitId) {
+      const unit = units[unitId];
+      if (!unit) {
+        renderUnitsList();
+        return;
+      }
+      document.title = `${unit.name} - Villa Maria del Triunfo 106`;
+
+      app.innerHTML = `
+        <button class="back-button" id="backBtn"><i class="fas fa-arrow-left"></i> Volver</button>
+        <header>
+          <h1>${unit.name}</h1>
+          <h2>${unit.type}</h2>
+        </header>
+        <div class="doors-list">
+          ${unit.doors
+            .map(
+              (door, index) => `
+            <div class="door" data-door-index="${index}">
+              <div class="door-info">
+                <div class="door-title">${door.title}</div>
+                <div class="door-content">${door.content}</div>
+              </div>
+              <div class="qr-code">
+                <img src="${generateQR(
+                  `${unit.name} - ${door.title}`
+                )}" alt="Código QR ${door.title}" />
+                <div class="qr-text">Escanea para ver detalles del equipo</div>
+              </div>
+              <button class="edit-btn" title="Editar contenido de la puerta">
+                <i class="fas fa-edit"></i> Editar
+              </button>
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+        <div class="footer">
+          <p>Villa Maria del Triunfo 106 - Compañía de Bomberos Voluntarios</p>
+          <p>Sistema de Gestión de Equipos © 2023</p>
+        </div>
+      `;
+
+      // Botón volver
+      document.getElementById("backBtn").addEventListener("click", () => {
+        renderUnitsList();
+        history.pushState({}, "", window.location.pathname);
+      });
+
+      // Botones editar
+      document.querySelectorAll(".edit-btn").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const doorDiv = btn.closest(".door");
+          const doorIndex = parseInt(doorDiv.getAttribute("data-door-index"));
+          const currentContent = unit.doors[doorIndex].content;
+          const newContent = prompt(
+            `Editar contenido de la ${unit.doors[doorIndex].title}:`,
+            currentContent
+          );
+          if (newContent !== null) {
+            unit.doors[doorIndex].content = newContent.trim();
+            // Actualizar contenido en la página
+            doorDiv.querySelector(".door-content").textContent = unit.doors[doorIndex].content;
+          }
+        });
+      });
+    }
+
+    // Manejo de navegación con historial para que funcione botón atrás del navegador
+    window.addEventListener("popstate", (event) => {
+      if (event.state && event.state.unitId) {
+        renderUnitPage(event.state.unitId);
       } else {
-        icon.classList.remove("fa-chevron-up");
-        icon.classList.add("fa-chevron-down");
+        renderUnitsList();
+      }
+    });
+
+    // Al cargar la página, si hay ?unit=xxx en URL, mostrar esa unidad
+    function init() {
+      const params = new URLSearchParams(window.location.search);
+      const unitId = params.get("unit");
+      if (unitId && units[unitId]) {
+        renderUnitPage(unitId);
+        history.replaceState({ unitId }, "", `?unit=${unitId}`);
+      } else {
+        renderUnitsList();
+        history.replaceState({}, "", window.location.pathname);
       }
     }
 
-    function editDoor(event, unitName, doorNumber) {
-      event.stopPropagation(); // Evita que se cierre la sección al hacer clic en el botón
-      const newContent = prompt(
-        `Editar contenido de la Puerta ${doorNumber} de ${unitName}:`
-      );
-      if (newContent !== null) {
-        // Buscar el contenedor de la puerta para actualizar el contenido
-        const doorDiv = event.target.closest(".door");
-        if (doorDiv) {
-          const contentDiv = doorDiv.querySelector(".door-content");
-          if (contentDiv) {
-            contentDiv.textContent = newContent;
-          }
-        }
-      }
+    init();
+  </script>
+</body>
+</html>
     }
   </script>
 </body>
