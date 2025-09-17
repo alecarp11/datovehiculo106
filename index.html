@@ -8,6 +8,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
       * {
         margin: 0;
@@ -128,7 +129,7 @@
         margin-bottom: 20px;
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
         position: relative;
-        display: flex; /* Usamos flexbox para controlar la dirección del flujo */
+        display: flex;
         flex-wrap: wrap;
         align-items: center;
         gap: 20px;
@@ -189,31 +190,46 @@
         color: #777;
       }
 
-      /* Botón editar azul con amarillo */
-      .edit-btn {
+      /* Botones de acción */
+      .action-buttons {
         position: absolute;
         bottom: 20px;
         left: 20px;
-        background-color: #1976d2;
-        color: #ffcc00;
+        display: flex;
+        gap: 10px;
+      }
+      .action-buttons button {
         border: none;
         padding: 8px 14px;
         border-radius: 6px;
         font-weight: bold;
         cursor: pointer;
-        box-shadow: 0 3px 6px rgba(25, 118, 210, 0.5);
-        transition: background-color 0.3s ease, color 0.3s ease;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
         display: flex;
         align-items: center;
         gap: 6px;
         font-size: 0.9rem;
         user-select: none;
-        z-index: 10;
+      }
+      .action-buttons button:hover {
+        transform: translateY(-2px);
+      }
+
+      .edit-btn {
+        background-color: #1976d2;
+        color: #ffcc00;
       }
       .edit-btn:hover {
         background-color: #145ea8;
-        color: #fff200;
-        box-shadow: 0 5px 10px rgba(20, 94, 168, 0.7);
+      }
+
+      .download-btn {
+        background-color: #4caf50;
+        color: white;
+      }
+      .download-btn:hover {
+        background-color: #45a049;
       }
 
       .footer {
@@ -275,7 +291,7 @@
         }
 
         .door {
-          flex-direction: column; /* Apila los elementos en una columna */
+          flex-direction: column;
           align-items: flex-start;
           text-align: left;
         }
@@ -654,9 +670,14 @@
                   )}" alt="Código QR ${door.title}" />
                   <div class="qr-text">Escanea para ver detalles del equipo</div>
                 </div>
-                <button class="edit-btn" title="Editar contenido de la puerta">
-                  <i class="fas fa-edit"></i> Editar
-                </button>
+                <div class="action-buttons">
+                  <button class="edit-btn" title="Editar contenido de la puerta">
+                    <i class="fas fa-edit"></i> Editar
+                  </button>
+                  <button class="download-btn" title="Descargar datos de la puerta">
+                    <i class="fas fa-file-excel"></i> Excel
+                  </button>
+                </div>
               </div>
             `
               )
@@ -704,6 +725,18 @@
             }
           });
         });
+
+        document.querySelectorAll(".download-btn").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const doorDiv = btn.closest(".door");
+                const unitId = doorDiv.getAttribute("data-unit-id");
+                const doorIndex = parseInt(doorDiv.getAttribute("data-door-index"));
+                const unit = units[unitId];
+                const door = unit.doors[doorIndex];
+                downloadExcel(unit, door);
+            });
+        });
       }
 
       function renderQRPage(unitId, doorIndex) {
@@ -731,6 +764,26 @@
             <p>Sistema de Gestión de Equipos © 2023</p>
           </div>
         `;
+      }
+
+      function downloadExcel(unit, door) {
+        const data = [
+          ["Unidad", unit.name],
+          ["Puerta", door.title],
+          [],
+          ["Contenido"]
+        ];
+
+        door.content.forEach(item => {
+          data.push([item]);
+        });
+
+        const ws = XLSX.utils.aoa_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Equipamiento");
+
+        const filename = `${unit.name.replace(/\s/g, '_')}_${door.title.replace(/\s/g, '_')}.xlsx`;
+        XLSX.writeFile(wb, filename);
       }
 
       // Detectar cambios en el fragmento de la URL
