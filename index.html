@@ -324,17 +324,17 @@
       const units = {
         maquina106: {
           name: "MAQUINA 106.01",
-          type: "Unidad principal de bomberos",
+          type: "Unidad contra Incendios",
           specs: {
-            placa: "EUD266",
-            cbp: "CBVP-325",
+            placa: "EUD-266",
+            cbp: "1234",
             modelo: "SPARTAN",
             ano: "2014",
             combustible: "Diésel",
           },
           doors: [
             {
-              title: "Puerta 1 - Equipos de Respiración",
+              title: "Puerta 1 ",
               content: [
                 "Máscaras de oxígeno",
                 "Tanques de aire comprimido",
@@ -342,7 +342,7 @@
               ],
             },
             {
-              title: "Puerta 2 - Mangueras y Acoples",
+              title: "Puerta 2 ",
               content: [
                 "Mangueras de alta presión",
                 "Acoples rápidos",
@@ -350,7 +350,7 @@
               ],
             },
             {
-              title: "Puerta 3 - Herramientas de Rescate",
+              title: "Puerta 3 ",
               content: [
                 "Hidráulicas",
                 "Motosierras",
@@ -359,7 +359,7 @@
               ],
             },
             {
-              title: "Puerta 4 - Equipos de Comunicación",
+              title: "Puerta 4 ",
               content: [
                 "Radios portátiles",
                 "Repetidoras",
@@ -367,7 +367,7 @@
               ],
             },
             {
-              title: "Puerta 5 - Equipos Médicos",
+              title: "Puerta 5 ",
               content: [
                 "Botiquines de primeros auxilios",
                 "Camillas",
@@ -376,7 +376,7 @@
               ],
             },
             {
-              title: "Puerta 6 - Iluminación",
+              title: "Puerta 6 ",
               content: [
                 "Focus de iluminación",
                 "Generadores eléctricos",
@@ -384,7 +384,7 @@
               ],
             },
             {
-              title: "Puerta 7 - Escalas y Cuerdas",
+              title: "Puerta 7 ",
               content: [
                 "Escalas de gancho",
                 "Cuerdas de rescate",
@@ -392,7 +392,7 @@
               ],
             },
             {
-              title: "Puerta 8 - Equipos de Detección",
+              title: "Puerta 8 ",
               content: [
                 "Detectores de gas",
                 "Térmicos",
@@ -401,7 +401,7 @@
               ],
             },
             {
-              title: "Puerta 9 - Material Diverso",
+              title: "Puerta 9 ",
               content: [
                 "Herramientas manuales",
                 "Equipos de limpieza",
@@ -409,7 +409,7 @@
               ],
             },
             {
-              title: "Puerta 10 - Equipos de Protección",
+              title: "Puerta 10 ",
               content: [
                 "Trajes de protección química",
                 "Guantes",
@@ -422,15 +422,15 @@
           name: "CISTERNA 106",
           type: "Unidad de abastecimiento de agua",
           specs: {
-            placa: "A0D-897",
-            cbp: "CBVP-326",
-            modelo: "International 4900",
-            ano: "1998",
+            placa: "",
+            cbp: "0520",
+            modelo: "Hino TC",
+            ano: "1982",
             combustible: "Diésel",
           },
           doors: [
             {
-              title: "Puerta Principal - Sistema de Bombeo",
+              title: "Puerta Principal (General)",
               content: [
                 "Bomba centrífuga de alta capacidad",
                 "Mangueras de succión",
@@ -444,15 +444,15 @@
           name: "RESCATE LIGERA 106",
           type: "Unidad de respuesta rápida",
           specs: {
-            placa: "AMB-205",
-            cbp: "CBVP-327",
+            placa: "EGB-658",
+            cbp: "1991",
             modelo: "Toyota Hilux",
             ano: "2010",
             combustible: "Gasolina",
           },
           doors: [
             {
-              title: "Puerta Principal - Equipos de Rescate Liviano",
+              title: "Puerta Principal - (General)",
               content: [
                 "Equipos de primeros auxilios",
                 "Herramientas manuales",
@@ -467,10 +467,10 @@
           name: "RESCATE 106",
           type: "Unidad de rescate pesado",
           specs: {
-            placa: "K1J-747",
-            cbp: "CBVP-328",
-            modelo: "Freightliner M-2",
-            ano: "2005",
+            placa: "",
+            cbp: "1222",
+            modelo: "HAHN",
+            ano: "1980",
             combustible: "Diésel",
           },
           doors: [
@@ -562,11 +562,11 @@
           name: "AMBULANCIA 106",
           type: "Unidad de atención médica",
           specs: {
-            placa: "EGN-450",
-            cbp: "CBVP-329",
-            modelo: "Ford E-350",
-            ano: "2015",
-            combustible: "Gasolina",
+            placa: "EUE-103",
+            cbp: "",
+            modelo: "Peugeot",
+            ano: "",
+            combustible: "",
           },
           doors: [
             {
@@ -752,15 +752,15 @@
         });
 
         document.querySelectorAll(".download-btn").forEach(btn => {
-            btn.addEventListener("click", (e) => {
-                e.stopPropagation();
-                const doorDiv = btn.closest(".door");
-                const unitId = doorDiv.getAttribute("data-unit-id");
-                const doorIndex = parseInt(doorDiv.getAttribute("data-door-index"));
-                const unit = units[unitId];
-                const door = unit.doors[doorIndex];
-                downloadExcel(unit, door);
-            });
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const doorDiv = btn.closest(".door");
+            const unitId = doorDiv.getAttribute("data-unit-id");
+            const doorIndex = parseInt(doorDiv.getAttribute("data-door-index"));
+            const unit = units[unitId];
+            const door = unit.doors[doorIndex];
+            downloadExcel(unit, door);
+          });
         });
       }
 
