@@ -244,6 +244,35 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       }
 
+      /* Estilos para la vista de QR */
+      .qr-page-container {
+        padding: 2rem;
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        max-width: 600px;
+        text-align: left;
+        margin-top: 40px;
+      }
+      .qr-page-container h2 {
+        color: #1976d2;
+        margin-bottom: 1rem;
+        font-size: 1.8rem;
+        text-align: center;
+      }
+      .qr-page-container h3 {
+        color: #d32f2f;
+      }
+      .qr-page-container ul {
+        margin: 0;
+        padding-left: 20px;
+      }
+      .qr-page-container li {
+        color: #555;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+      }
+
       /* MEDIA QUERIES PARA ADAPTABILIDAD */
       @media (min-width: 768px) {
         .units-list {
@@ -644,18 +673,10 @@
           Object.assign(units, JSON.parse(storedData));
         }
       }
-      
-      // Función CORREGIDA para generar el QR
+
       function generateQR(unitId, doorIndex) {
-        const unit = units[unitId];
-        const door = unit.doors[doorIndex];
-        const doorData = {
-          unitName: unit.name,
-          doorTitle: door.title,
-          content: door.content
-        };
         const baseUrl = window.location.href.split("#")[0];
-        const qrContent = `${baseUrl.replace('index.html', 'puerta.html')}?data=${encodeURIComponent(JSON.stringify(doorData))}`;
+        const qrContent = `${baseUrl}#door=${unitId}-${doorIndex}`;
         return `https://quickchart.io/qr?text=${encodeURIComponent(qrContent)}&size=120`;
       }
 
@@ -812,6 +833,33 @@
         });
       }
 
+      function renderDoorPage(unitId, doorIndex) {
+        const unit = units[unitId];
+        const door = unit.doors[doorIndex];
+        if (!unit || !door) {
+          renderUnitsList();
+          return;
+        }
+
+        document.title = `${door.title} - ${unit.name}`;
+
+        app.innerHTML = `
+          <button class="back-button" id="backBtn"><i class="fas fa-arrow-left"></i> Regresar</button>
+          <div class="qr-page-container">
+            <h2>${door.title}</h2>
+            <p><strong>Unidad:</strong> ${unit.name}</p>
+            <h3>Equipamiento:</h3>
+            <ul>
+              ${door.content.map(item => `<li>${item}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+
+        document.getElementById("backBtn").addEventListener("click", () => {
+          window.history.back();
+        });
+      }
+
       function downloadExcel(unit, door) {
         const data = [
           ["Unidad", unit.name],
@@ -835,13 +883,22 @@
       function handleUrlFragment() {
         const hash = window.location.hash.substring(1);
         const params = new URLSearchParams(hash);
-        const unitId = params.get("unit");
-        
-        // No longer need to handle doorIndex from the hash
-        if (unitId) {
-          renderUnitPage(unitId);
+        const doorParam = params.get("door");
+
+        if (doorParam) {
+          const [unitId, doorIndex] = doorParam.split('-');
+          if (unitId && doorIndex) {
+            renderDoorPage(unitId, parseInt(doorIndex));
+          } else {
+            renderUnitsList();
+          }
         } else {
-          renderUnitsList();
+          const unitId = params.get("unit");
+          if (unitId) {
+            renderUnitPage(unitId);
+          } else {
+            renderUnitsList();
+          }
         }
       }
 
