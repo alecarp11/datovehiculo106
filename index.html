@@ -748,7 +748,7 @@
       });
 
       function handleUrlFragment() {
-        const hash = window.location.hash.substring(1); // Elimina el '#'
+        const hash = window.location.hash.substring(1);
         const params = new URLSearchParams(hash);
         const unitId = params.get("unit");
         const doorIndex = params.get("door");
@@ -771,5 +771,4 @@
     </script>
   </body>
 </html>
-
       
