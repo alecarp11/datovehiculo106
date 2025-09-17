@@ -22,6 +22,9 @@
         line-height: 1.6;
         padding: 20px;
         min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
 
       .container {
@@ -96,7 +99,6 @@
       }
 
       /* Página unidad */
-
       .back-button {
         background-color: #1976d2;
         color: #ffcc00;
@@ -143,7 +145,6 @@
         font-size: 1.3rem;
       }
 
-      /* Estilos para la lista numerada */
       .door-content ol {
         margin: 0;
         padding-left: 20px;
@@ -155,7 +156,6 @@
         margin-bottom: 5px;
       }
 
-      /* Estilo para el área de texto editable */
       .door-content textarea {
         width: 100%;
         min-height: 100px;
@@ -225,6 +225,31 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       }
 
+      /* Estilos para la vista de QR */
+      .qr-page-content {
+        padding: 2rem;
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        max-width: 600px;
+        text-align: left;
+        margin-top: 40px;
+      }
+      .qr-page-content h2 {
+        color: #1976d2;
+        margin-bottom: 1rem;
+        font-size: 1.8rem;
+      }
+      .qr-page-content ul {
+        margin: 0;
+        padding-left: 20px;
+      }
+      .qr-page-content li {
+        color: #555;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+      }
+
       @media (max-width: 768px) {
         .units-list {
           grid-template-columns: 1fr;
@@ -256,7 +281,7 @@
       </div>
 
     <script>
-      // Datos de unidades y puertas con información adicional
+      // Datos de unidades y puertas
       const units = {
         maquina106: {
           name: "MAQUINA 106.01",
@@ -516,13 +541,11 @@
 
       const app = document.getElementById("app");
       const correctPassword = "106";
-      
-      // Función para guardar los datos en localStorage
+
       function saveData() {
         localStorage.setItem("unitsData", JSON.stringify(units));
       }
 
-      // Función para cargar los datos desde localStorage
       function loadData() {
         const storedData = localStorage.getItem("unitsData");
         if (storedData) {
@@ -530,16 +553,12 @@
         }
       }
 
-      // Función para generar URL QR con texto codificado
-      function generateQR(text) {
-        return (
-          "https://quickchart.io/qr?text=" +
-          encodeURIComponent(text) +
-          "&size=120"
-        );
+      function generateQR(unitId, doorIndex) {
+        const baseUrl = window.location.origin + window.location.pathname;
+        const qrContent = `${baseUrl}?unit=${unitId}&door=${doorIndex}`;
+        return `https://quickchart.io/qr?text=${encodeURIComponent(qrContent)}&size=120`;
       }
 
-      // Renderiza la lista principal de unidades
       function renderUnitsList() {
         document.title = "Villa Maria del Triunfo 106 - Compañía de Bomberos";
         app.innerHTML = `
@@ -572,7 +591,6 @@
           </div>
         `;
 
-        // Añadir evento click a cada tarjeta para ir a página unidad
         document.querySelectorAll(".unit-card").forEach((card) => {
           card.addEventListener("click", () => {
             const unitId = card.getAttribute("data-id");
@@ -582,7 +600,6 @@
         });
       }
 
-      // Renderiza la página de una unidad específica
       function renderUnitPage(unitId) {
         const unit = units[unitId];
         if (!unit) {
@@ -607,7 +624,7 @@
             ${unit.doors
               .map(
                 (door, index) => `
-              <div class="door" data-door-index="${index}">
+              <div class="door" data-door-index="${index}" data-unit-id="${unitId}">
                 <div class="door-info">
                   <div class="door-title">${door.title}</div>
                   <div class="door-content">
@@ -618,7 +635,8 @@
                 </div>
                 <div class="qr-code">
                   <img src="${generateQR(
-                    `${unit.name} - ${door.title}`
+                    unitId,
+                    index
                   )}" alt="Código QR ${door.title}" />
                   <div class="qr-text">Escanea para ver detalles del equipo</div>
                 </div>
@@ -636,13 +654,11 @@
           </div>
         `;
 
-        // Botón volver
         document.getElementById("backBtn").addEventListener("click", () => {
           renderUnitsList();
           history.pushState({}, "", window.location.pathname);
         });
 
-        // Botones editar
         document.querySelectorAll(".edit-btn").forEach((btn) => {
           btn.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -652,16 +668,13 @@
             
             // Si ya está en modo de edición, simplemente guarda y sale del modo
             if (doorContentDiv.contentEditable === "true") {
-              // Convertir el texto del textarea de nuevo a un array
               const newContent = doorContentDiv.querySelector("textarea").value.split('\n').filter(Boolean).map(item => item.trim());
               unit.doors[doorIndex].content = newContent;
-              saveData(); // Guardar automáticamente
-              renderUnitPage(unitId); // Volver a renderizar para ver los cambios guardados
+              saveData();
+              renderUnitPage(unitId);
             } else {
-              // Si no está en modo de edición, pide la contraseña
               const password = prompt("Por favor, ingrese la contraseña para editar:");
               if (password === correctPassword) {
-                // Habilitar edición si la contraseña es correcta
                 const currentContentText = unit.doors[doorIndex].content.join('\n');
                 doorContentDiv.innerHTML = `<textarea>${currentContentText}</textarea>`;
                 doorContentDiv.querySelector("textarea").focus();
@@ -673,29 +686,67 @@
           });
         });
       }
+      
+      function renderQRPage(unitId, doorIndex) {
+        const unit = units[unitId];
+        if (!unit || !unit.doors[doorIndex]) {
+            renderUnitsList();
+            return;
+        }
 
-      // Manejo de navegación con historial para que funcione botón atrás del navegador
+        const door = unit.doors[doorIndex];
+        document.title = `${door.title} - ${unit.name}`;
+        
+        app.innerHTML = `
+            <div class="qr-page-content">
+                <button class="back-button" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> Volver</button>
+                <h2>${door.title}</h2>
+                <p><strong>Unidad:</strong> ${unit.name}</p>
+                <h3>Equipamiento:</h3>
+                <ul>
+                    ${door.content.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            </div>
+            <div class="footer" style="width: 100%;">
+              <p>Villa Maria del Triunfo 106 - Compañía de Bomberos Voluntarios</p>
+              <p>Sistema de Gestión de Equipos © 2023</p>
+            </div>
+        `;
+      }
+
       window.addEventListener("popstate", (event) => {
-        if (event.state && event.state.unitId) {
-          renderUnitPage(event.state.unitId);
+        const params = new URLSearchParams(window.location.search);
+        const unitId = params.get("unit");
+        const doorIndex = params.get("door");
+
+        if (unitId && doorIndex) {
+            renderQRPage(unitId, doorIndex);
+        } else if (unitId) {
+            renderUnitPage(unitId);
         } else {
-          renderUnitsList();
+            renderUnitsList();
         }
       });
 
-      // Al cargar la página, cargar los datos guardados antes de renderizar
       function init() {
         loadData();
         const params = new URLSearchParams(window.location.search);
         const unitId = params.get("unit");
-        if (unitId && units[unitId]) {
-          renderUnitPage(unitId);
-          history.replaceState({ unitId }, "", `?unit=${unitId}`);
+        const doorIndex = params.get("door");
+
+        if (unitId && doorIndex) {
+            renderQRPage(unitId, doorIndex);
+        } else if (unitId && units[unitId]) {
+            renderUnitPage(unitId);
         } else {
-          renderUnitsList();
-          history.replaceState({}, "", window.location.pathname);
+            renderUnitsList();
         }
       }
+
+      init();
+    </script>
+  </body>
+</html>
 
       init();
     </script>
