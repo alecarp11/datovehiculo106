@@ -128,7 +128,7 @@
         margin-bottom: 20px;
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
         position: relative;
-        display: flex;
+        display: flex; /* Usamos flexbox para controlar la dirección del flujo */
         flex-wrap: wrap;
         align-items: center;
         gap: 20px;
@@ -256,17 +256,8 @@
 
       /* MEDIA QUERIES PARA ADAPTABILIDAD */
       @media (min-width: 768px) {
-        .door {
-          flex-direction: row;
-          align-items: center;
-        }
-
-        .door-info {
-          flex: 1;
-        }
-
-        .qr-code {
-          flex: 0 0 140px;
+        .units-list {
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         }
       }
 
@@ -284,7 +275,7 @@
         }
 
         .door {
-          flex-direction: column;
+          flex-direction: column; /* Apila los elementos en una columna */
           align-items: flex-start;
           text-align: left;
         }
@@ -771,4 +762,3 @@
     </script>
   </body>
 </html>
-      
