@@ -721,6 +721,733 @@
                 btn.innerHTML = '<i class="fas fa-save"></i> Guardar';
               } else if (password !== null) {
                 alert("Contraseña incorrecta. No se puede editar.");
+              }<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Villa Maria del Triunfo 106 - Compañía de Bomberos</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #ffcc00 0%, #ff9900 100%);
+        color: #333;
+        line-height: 1.6;
+        padding: 20px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      header {
+        text-align: center;
+        padding: 30px 0;
+        margin-bottom: 30px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      h1 {
+        font-size: 2.8rem;
+        color: #d32f2f;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        font-size: 1.8rem;
+        color: #1976d2;
+        margin-bottom: 20px;
+      }
+
+      .units-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+      }
+
+      .unit-card {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .unit-card:hover {
+        transform: translateY(-5px);
+        background: #fff8e1;
+      }
+
+      .unit-title {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #d32f2f;
+        margin-bottom: 8px;
+      }
+
+      .unit-type {
+        font-size: 1rem;
+        opacity: 0.9;
+        color: #1976d2;
+      }
+
+      .unit-specs {
+        font-size: 0.9rem;
+        color: #666;
+        margin-top: 10px;
+        text-align: left;
+        line-height: 1.4;
+      }
+
+      /* Página unidad */
+      .back-button {
+        background-color: #1976d2;
+        color: #ffcc00;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-bottom: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 3px 6px rgba(25, 118, 210, 0.5);
+        transition: background-color 0.3s ease, color 0.3s ease;
+        user-select: none;
+      }
+      .back-button:hover {
+        background-color: #145ea8;
+        color: #fff200;
+        box-shadow: 0 5px 10px rgba(20, 94, 168, 0.7);
+      }
+
+      .door {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        padding: 20px 20px 60px 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .door-info {
+        flex: 1 1 300px;
+      }
+
+      .door-title {
+        font-weight: bold;
+        color: #1976d2;
+        margin-bottom: 10px;
+        font-size: 1.3rem;
+      }
+
+      .door-content ol {
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      .door-content ol li {
+        color: #555;
+        font-size: 1rem;
+        margin-bottom: 5px;
+      }
+
+      .door-content textarea {
+        width: 100%;
+        min-height: 100px;
+        border: 1px solid #1976d2;
+        padding: 5px;
+        font-size: 1rem;
+        line-height: 1.6;
+        resize: vertical;
+      }
+
+      .qr-code {
+        flex: 0 0 140px;
+        text-align: center;
+        background-color: #f9f9f9;
+        border-radius: 12px;
+        padding: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .qr-code img {
+        max-width: 120px;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 5px;
+        background-color: white;
+      }
+
+      .qr-text {
+        font-size: 0.85rem;
+        margin-top: 8px;
+        color: #777;
+      }
+
+      /* Botones de acción */
+      .action-buttons {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        display: flex;
+        gap: 10px;
+      }
+      .action-buttons button {
+        border: none;
+        padding: 8px 14px;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.9rem;
+        user-select: none;
+      }
+      .action-buttons button:hover {
+        transform: translateY(-2px);
+      }
+
+      .edit-btn {
+        background-color: #1976d2;
+        color: #ffcc00;
+      }
+      .edit-btn:hover {
+        background-color: #145ea8;
+      }
+
+      .download-btn {
+        background-color: #4caf50;
+        color: white;
+      }
+      .download-btn:hover {
+        background-color: #45a049;
+      }
+
+      .footer {
+        text-align: center;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        margin-top: 30px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Estilos para la vista de QR */
+      .qr-page-container {
+        padding: 2rem;
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        max-width: 600px;
+        text-align: left;
+        margin-top: 40px;
+      }
+      .qr-page-container h2 {
+        color: #1976d2;
+        margin-bottom: 1rem;
+        font-size: 1.8rem;
+        text-align: center;
+      }
+      .qr-page-container h3 {
+        color: #d32f2f;
+      }
+      .qr-page-container ul {
+        margin: 0;
+        padding-left: 20px;
+      }
+      .qr-page-container li {
+        color: #555;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+      }
+      .qr-page-container .download-btn {
+        margin-top: 20px;
+        width: 100%;
+      }
+
+      /* MEDIA QUERIES PARA ADAPTABILIDAD */
+      @media (min-width: 768px) {
+        .units-list {
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+      }
+
+      @media (max-width: 767px) {
+        .units-list {
+          grid-template-columns: 1fr;
+        }
+
+        h1 {
+          font-size: 2.2rem;
+        }
+
+        h2 {
+          font-size: 1.5rem;
+        }
+
+        .door {
+          flex-direction: column;
+          align-items: flex-start;
+          text-align: left;
+        }
+
+        .qr-code {
+          flex: none;
+          width: 100%;
+          margin-top: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="app">
+      </div>
+
+    <script>
+      // Datos de unidades y puertas
+      const units = {
+        maquina106: {
+          name: "MAQUINA 106.01",
+          type: "Unidad principal de bomberos",
+          specs: {
+            placa: "EGG-164",
+            modelo: "Ford F-900",
+            ano: "1997",
+            combustible: "Diésel",
+          },
+          doors: [
+            {
+              title: "Puerta 1 - Equipos de Respiración",
+              content: [
+                "Máscaras de oxígeno",
+                "Tanques de aire comprimido",
+                "Reguladores de presión",
+              ],
+            },
+            {
+              title: "Puerta 2 - Mangueras y Acoples",
+              content: [
+                "Mangueras de alta presión",
+                "Acoples rápidos",
+                "Lanzas de agua",
+              ],
+            },
+            {
+              title: "Puerta 3 - Herramientas de Rescate",
+              content: [
+                "Hidráulicas",
+                "Motosierras",
+                "Herramientas de forcé",
+                "Equipos de estabilización",
+              ],
+            },
+            {
+              title: "Puerta 4 - Equipos de Comunicación",
+              content: [
+                "Radios portátiles",
+                "Repetidoras",
+                "Equipos de comunicación de emergencia",
+              ],
+            },
+            {
+              title: "Puerta 5 - Equipos Médicos",
+              content: [
+                "Botiquines de primeros auxilios",
+                "Camillas",
+                "Collarines",
+                "Equipos de inmovilización",
+              ],
+            },
+            {
+              title: "Puerta 6 - Iluminación",
+              content: [
+                "Focus de iluminación",
+                "Generadores eléctricos",
+                "Equipos de alumbrado",
+              ],
+            },
+            {
+              title: "Puerta 7 - Escalas y Cuerdas",
+              content: [
+                "Escalas de gancho",
+                "Cuerdas de rescate",
+                "Arneses y equipos de altura",
+              ],
+            },
+            {
+              title: "Puerta 8 - Equipos de Detección",
+              content: [
+                "Detectores de gas",
+                "Térmicos",
+                "Cámaras térmicas",
+                "Equipos de medición",
+              ],
+            },
+            {
+              title: "Puerta 9 - Material Diverso",
+              content: [
+                "Herramientas manuales",
+                "Equipos de limpieza",
+                "Material de mantenimiento",
+              ],
+            },
+            {
+              title: "Puerta 10 - Equipos de Protección",
+              content: [
+                "Trajes de protección química",
+                "Guantes",
+                "Botas y cascos de seguridad",
+              ],
+            },
+          ],
+        },
+        cisterna106: {
+          name: "CISTERNA 106",
+          type: "Unidad de abastecimiento de agua",
+          specs: {
+            placa: "A0D-897",
+            modelo: "International 4900",
+            ano: "1998",
+            combustible: "Diésel",
+          },
+          doors: [
+            {
+              title: "Puerta Principal - Sistema de Bombeo",
+              content: [
+                "Bomba centrífuga de alta capacidad",
+                "Mangueras de succión",
+                "Válvulas de control",
+                "Sistema de espumógeno",
+              ],
+            },
+          ],
+        },
+        rescateLigera106: {
+          name: "RESCATE LIGERA 106",
+          type: "Unidad de respuesta rápida",
+          specs: {
+            placa: "AMB-205",
+            modelo: "Toyota Hilux",
+            ano: "2010",
+            combustible: "Gasolina",
+          },
+          doors: [
+            {
+              title: "Puerta Principal - Equipos de Rescate Liviano",
+              content: [
+                "Equipos de primeros auxilios",
+                "Herramientas manuales",
+                "Cuerdas",
+                "Iluminación portátil",
+                "Equipos de comunicación",
+              ],
+            },
+          ],
+        },
+        rescate106: {
+          name: "RESCATE 106",
+          type: "Unidad de rescate pesado",
+          specs: {
+            placa: "K1J-747",
+            modelo: "Freightliner M-2",
+            ano: "2005",
+            combustible: "Diésel",
+          },
+          doors: [
+            {
+              title: "Puerta 1 - Herramientas Hidráulicas",
+              content: [
+                "Cizallas",
+                "Expansores",
+                "Cilindros",
+                "Power units para rescate vehicular",
+              ],
+            },
+            {
+              title: "Puerta 2 - Equipos de Estabilización",
+              content: [
+                "Gatos",
+                "Puntales",
+                "Cuñas",
+                "Sistemas de estabilización vehicular",
+              ],
+            },
+            {
+              title: "Puerta 3 - Equipos de Elevación",
+              content: [
+                "Gatos de alto tonelaje",
+                "Sistemas de elevación por aire",
+                "Equipos de levante",
+              ],
+            },
+            {
+              title: "Puerta 4 - Equipos de Iluminación",
+              content: [
+                "Torres de iluminación",
+                "Focus de alta intensidad",
+                "Generadores eléctricos",
+              ],
+            },
+            {
+              title: "Puerta 5 - Equipos de Corte",
+              content: [
+                "Motosierras",
+                "Equipos de oxicorte",
+                "Herramientas de corte especializadas",
+              ],
+            },
+            {
+              title: "Puerta 6 - Equipos de Comunicación",
+              content: [
+                "Radios de largo alcance",
+                "Sistemas de intercomunicación",
+                "Equipos de enlace",
+              ],
+            },
+            {
+              title: "Puerta 7 - Equipos de Detección",
+              content: [
+                "Detectores de gases",
+                "Cámaras térmicas",
+                "Equipos de medición ambiental",
+              ],
+            },
+            {
+              title: "Puerta 8 - Equipos de Ventilación",
+              content: [
+                "Ventiladores de presión positiva",
+                "Extractores de humo",
+                "Equipos de renovación de aire",
+              ],
+            },
+            {
+              title: "Puerta 9 - Equipos de Sostenimiento",
+              content: [
+                "Material de apuntalamiento",
+                "Sistemas de entibación",
+                "Equipos de soporte estructural",
+              ],
+            },
+            {
+              title: "Puerta 10 - Equipos Especializados",
+              content: [
+                "Material para rescate en altura",
+                "Espacios confinados",
+                "Situaciones especiales",
+              ],
+            },
+          ],
+        },
+        ambulancia106: {
+          name: "AMBULANCIA 106",
+          type: "Unidad de atención médica",
+          specs: {
+            placa: "EGN-450",
+            modelo: "Ford E-350",
+            ano: "2015",
+            combustible: "Gasolina",
+          },
+          doors: [
+            {
+              title: "Puerta Principal - Equipamiento Médico",
+              content: [
+                "Camilla",
+                "Botiquines de avanzada",
+                "Equipos de oxígeno",
+                "Monitor desfibrilador",
+                "Material de inmovilización",
+              ],
+            },
+          ],
+        },
+      };
+
+      const app = document.getElementById("app");
+      const correctPassword = "106";
+
+      function saveData() {
+        localStorage.setItem("unitsData", JSON.stringify(units));
+      }
+
+      function loadData() {
+        const storedData = localStorage.getItem("unitsData");
+        if (storedData) {
+          Object.assign(units, JSON.parse(storedData));
+        }
+      }
+
+      function generateQR(unitId, doorIndex) {
+        const baseUrl = window.location.href.split("#")[0];
+        const qrContent = `${baseUrl}#unit=${unitId}&door=${doorIndex}`;
+        return `https://quickchart.io/qr?text=${encodeURIComponent(
+          qrContent
+        )}&size=120`;
+      }
+
+      function renderUnitsList() {
+        document.title = "Villa Maria del Triunfo 106 - Compañía de Bomberos";
+        app.innerHTML = `
+          <header>
+            <h1>Villa Maria del Triunfo 106</h1>
+            <h2>Compañía de Bomberos</h2>
+            <p>Sistema de gestión de unidades y equipamiento</p>
+          </header>
+          <div class="units-list">
+            ${Object.entries(units)
+              .map(
+                ([id, unit]) => `
+              <div class="unit-card" data-id="${id}">
+                <div class="unit-title">${unit.name}</div>
+                <div class="unit-type">${unit.type}</div>
+                <div class="unit-specs">
+                  <strong>Placa:</strong> ${unit.specs.placa}<br>
+                  <strong>Modelo:</strong> ${unit.specs.modelo}<br>
+                  <strong>Año:</strong> ${unit.specs.ano}<br>
+                  <strong>Combustible:</strong> ${unit.specs.combustible}
+                </div>
+              </div>
+            `
+              )
+              .join("")}
+          </div>
+          <div class="footer">
+            <p>Villa Maria del Triunfo 106 - Compañía de Bomberos Voluntarios</p>
+            <p>Sistema de Gestión de Equipos © 2023</p>
+          </div>
+        `;
+
+        document.querySelectorAll(".unit-card").forEach((card) => {
+          card.addEventListener("click", () => {
+            const unitId = card.getAttribute("data-id");
+            renderUnitPage(unitId);
+            history.pushState({ unitId }, "", `#unit=${unitId}`);
+          });
+        });
+      }
+
+      function renderUnitPage(unitId) {
+        const unit = units[unitId];
+        if (!unit) {
+          renderUnitsList();
+          return;
+        }
+        document.title = `${unit.name} - Villa Maria del Triunfo 106`;
+
+        app.innerHTML = `
+          <button class="back-button" id="backBtn"><i class="fas fa-arrow-left"></i> Volver</button>
+          <header>
+            <h1>${unit.name}</h1>
+            <h2>${unit.type}</h2>
+            <div class="unit-specs" style="text-align:center;">
+              <strong>Placa:</strong> ${unit.specs.placa} |
+              <strong>Modelo:</strong> ${unit.specs.modelo} |
+              <strong>Año:</strong> ${unit.specs.ano} |
+              <strong>Combustible:</strong> ${unit.specs.combustible}
+            </div>
+          </header>
+          <div class="doors-list">
+            ${unit.doors
+              .map(
+                (door, index) => `
+              <div class="door" data-door-index="${index}" data-unit-id="${unitId}">
+                <div class="door-info">
+                  <div class="door-title">${door.title}</div>
+                  <div class="door-content">
+                    <ol>
+                      ${door.content.map((item) => `<li>${item}</li>`).join("")}
+                    </ol>
+                  </div>
+                </div>
+                <div class="qr-code">
+                  <img src="${generateQR(
+                    unitId,
+                    index
+                  )}" alt="Código QR ${door.title}" />
+                  <div class="qr-text">Escanea para ver detalles del equipo</div>
+                </div>
+                <div class="action-buttons">
+                  <button class="edit-btn" title="Editar contenido de la puerta">
+                    <i class="fas fa-edit"></i> Editar
+                  </button>
+                  <button class="download-btn" title="Descargar datos de la puerta">
+                    <i class="fas fa-file-excel"></i> Excel
+                  </button>
+                </div>
+              </div>
+            `
+              )
+              .join("")}
+          </div>
+          <div class="footer">
+            <p>Villa Maria del Triunfo 106 - Compañía de Bomberos Voluntarios</p>
+            <p>Sistema de Gestión de Equipos © 2023</p>
+          </div>
+        `;
+
+        document.getElementById("backBtn").addEventListener("click", () => {
+          renderUnitsList();
+          history.pushState({}, "", window.location.pathname);
+        });
+
+        document.querySelectorAll(".edit-btn").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const doorDiv = btn.closest(".door");
+            const doorContentDiv = doorDiv.querySelector(".door-content");
+            const doorIndex = parseInt(doorDiv.getAttribute("data-door-index"));
+
+            if (doorContentDiv.contentEditable === "true") {
+              const newContent = doorContentDiv
+                .querySelector("textarea")
+                .value.split("\n")
+                .filter(Boolean)
+                .map((item) => item.trim());
+              unit.doors[doorIndex].content = newContent;
+              saveData();
+              renderUnitPage(unitId);
+            } else {
+              const password = prompt(
+                "Por favor, ingrese la contraseña para editar:"
+              );
+              if (password === correctPassword) {
+                const currentContentText = unit.doors[doorIndex].content.join("\n");
+                doorContentDiv.innerHTML = `<textarea>${currentContentText}</textarea>`;
+                doorContentDiv.querySelector("textarea").focus();
+                btn.innerHTML = '<i class="fas fa-save"></i> Guardar';
+              } else if (password !== null) {
+                alert("Contraseña incorrecta. No se puede editar.");
               }
             }
           });
@@ -758,12 +1485,19 @@
             <ul>
               ${door.content.map((item) => `<li>${item}</li>`).join("")}
             </ul>
+            <button class="download-btn" id="downloadQRBtn">
+              <i class="fas fa-file-excel"></i> Descargar Excel
+            </button>
           </div>
           <div class="footer" style="width: 100%;">
             <p>Villa Maria del Triunfo 106 - Compañía de Bomberos Voluntarios</p>
             <p>Sistema de Gestión de Equipos © 2023</p>
           </div>
         `;
+        
+        document.getElementById("downloadQRBtn").addEventListener("click", () => {
+          downloadExcel(unit, door);
+        });
       }
 
       function downloadExcel(unit, door) {
