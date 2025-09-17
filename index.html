@@ -458,6 +458,466 @@
                 "Iluminación portátil",
                 "Equipos de comunicación",
               ],
+</html><!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Villa Maria del Triunfo 106 - Compañía de Bomberos</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #ffcc00 0%, #ff9900 100%);
+        color: #333;
+        line-height: 1.6;
+        padding: 20px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      header {
+        text-align: center;
+        padding: 30px 0;
+        margin-bottom: 30px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      h1 {
+        font-size: 2.8rem;
+        color: #d32f2f;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        font-size: 1.8rem;
+        color: #1976d2;
+        margin-bottom: 20px;
+      }
+
+      .units-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 25px;
+        margin-bottom: 40px;
+      }
+
+      .unit-card {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        padding: 20px;
+        text-align: center;
+        width: 100%;
+        max-width: 280px;
+      }
+
+      .unit-card:hover {
+        transform: translateY(-5px);
+        background: #fff8e1;
+      }
+
+      .unit-title {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #d32f2f;
+        margin-bottom: 8px;
+      }
+
+      .unit-type {
+        font-size: 1rem;
+        opacity: 0.9;
+        color: #1976d2;
+      }
+
+      .unit-specs {
+        font-size: 0.9rem;
+        color: #666;
+        margin-top: 10px;
+        text-align: left;
+        line-height: 1.4;
+      }
+
+      /* Página unidad */
+      .back-button {
+        background-color: #1976d2;
+        color: #ffcc00;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-bottom: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 3px 6px rgba(25, 118, 210, 0.5);
+        transition: background-color 0.3s ease, color 0.3s ease;
+        user-select: none;
+      }
+      .back-button:hover {
+        background-color: #145ea8;
+        color: #fff200;
+        box-shadow: 0 5px 10px rgba(20, 94, 168, 0.7);
+      }
+
+      .door {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        padding: 20px 20px 60px 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .door-info {
+        flex: 1 1 300px;
+      }
+
+      .door-title {
+        font-weight: bold;
+        color: #1976d2;
+        margin-bottom: 10px;
+        font-size: 1.3rem;
+      }
+
+      .door-content ol {
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      .door-content ol li {
+        color: #555;
+        font-size: 1rem;
+        margin-bottom: 5px;
+      }
+
+      .door-content textarea {
+        width: 100%;
+        min-height: 100px;
+        border: 1px solid #1976d2;
+        padding: 5px;
+        font-size: 1rem;
+        line-height: 1.6;
+        resize: vertical;
+      }
+
+      .qr-code {
+        flex: 0 0 140px;
+        text-align: center;
+        background-color: #f9f9f9;
+        border-radius: 12px;
+        padding: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .qr-code img {
+        max-width: 120px;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 5px;
+        background-color: white;
+      }
+
+      .qr-text {
+        font-size: 0.85rem;
+        margin-top: 8px;
+        color: #777;
+      }
+
+      /* Botones de acción */
+      .action-buttons {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        display: flex;
+        gap: 10px;
+      }
+      .action-buttons button {
+        border: none;
+        padding: 8px 14px;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.9rem;
+        user-select: none;
+      }
+      .action-buttons button:hover {
+        transform: translateY(-2px);
+      }
+
+      .edit-btn {
+        background-color: #1976d2;
+        color: #ffcc00;
+      }
+      .edit-btn:hover {
+        background-color: #145ea8;
+      }
+
+      .download-btn {
+        background-color: #4caf50;
+        color: white;
+      }
+      .download-btn:hover {
+        background-color: #45a049;
+      }
+
+      .footer {
+        text-align: center;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        margin-top: 30px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Estilos para la vista de QR */
+      .qr-page-container {
+        padding: 2rem;
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        max-width: 600px;
+        text-align: left;
+        margin-top: 40px;
+      }
+      .qr-page-container h2 {
+        color: #1976d2;
+        margin-bottom: 1rem;
+        font-size: 1.8rem;
+        text-align: center;
+      }
+      .qr-page-container h3 {
+        color: #d32f2f;
+      }
+      .qr-page-container ul {
+        margin: 0;
+        padding-left: 20px;
+      }
+      .qr-page-container li {
+        color: #555;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+      }
+      .qr-page-container .download-btn {
+        margin-top: 20px;
+        width: 100%;
+      }
+
+      /* MEDIA QUERIES PARA ADAPTABILIDAD */
+      @media (min-width: 768px) {
+        .units-list {
+          flex-direction: row;
+        }
+
+        .door {
+          flex-direction: row;
+          align-items: center;
+        }
+      }
+
+      @media (max-width: 767px) {
+        .units-list {
+          flex-direction: column;
+        }
+
+        h1 {
+          font-size: 2.2rem;
+        }
+
+        h2 {
+          font-size: 1.5rem;
+        }
+
+        .door {
+          flex-direction: column;
+          align-items: flex-start;
+          text-align: left;
+        }
+
+        .qr-code {
+          flex: none;
+          width: 100%;
+          margin-top: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="app">
+      </div>
+
+    <script>
+      // Datos de unidades y puertas
+      const units = {
+        maquina106: {
+          name: "MAQUINA 106.01",
+          type: "Unidad principal de bomberos",
+          specs: {
+            placa: "EGG-164",
+            modelo: "Ford F-900",
+            ano: "1997",
+            combustible: "Diésel",
+          },
+          doors: [
+            {
+              title: "Puerta 1 - Equipos de Respiración",
+              content: [
+                "Máscaras de oxígeno",
+                "Tanques de aire comprimido",
+                "Reguladores de presión",
+              ],
+            },
+            {
+              title: "Puerta 2 - Mangueras y Acoples",
+              content: [
+                "Mangueras de alta presión",
+                "Acoples rápidos",
+                "Lanzas de agua",
+              ],
+            },
+            {
+              title: "Puerta 3 - Herramientas de Rescate",
+              content: [
+                "Hidráulicas",
+                "Motosierras",
+                "Herramientas de forcé",
+                "Equipos de estabilización",
+              ],
+            },
+            {
+              title: "Puerta 4 - Equipos de Comunicación",
+              content: [
+                "Radios portátiles",
+                "Repetidoras",
+                "Equipos de comunicación de emergencia",
+              ],
+            },
+            {
+              title: "Puerta 5 - Equipos Médicos",
+              content: [
+                "Botiquines de primeros auxilios",
+                "Camillas",
+                "Collarines",
+                "Equipos de inmovilización",
+              ],
+            },
+            {
+              title: "Puerta 6 - Iluminación",
+              content: [
+                "Focus de iluminación",
+                "Generadores eléctricos",
+                "Equipos de alumbrado",
+              ],
+            },
+            {
+              title: "Puerta 7 - Escalas y Cuerdas",
+              content: [
+                "Escalas de gancho",
+                "Cuerdas de rescate",
+                "Arneses y equipos de altura",
+              ],
+            },
+            {
+              title: "Puerta 8 - Equipos de Detección",
+              content: [
+                "Detectores de gas",
+                "Térmicos",
+                "Cámaras térmicas",
+                "Equipos de medición",
+              ],
+            },
+            {
+              title: "Puerta 9 - Material Diverso",
+              content: [
+                "Herramientas manuales",
+                "Equipos de limpieza",
+                "Material de mantenimiento",
+              ],
+            },
+            {
+              title: "Puerta 10 - Equipos de Protección",
+              content: [
+                "Trajes de protección química",
+                "Guantes",
+                "Botas y cascos de seguridad",
+              ],
+            },
+          ],
+        },
+        cisterna106: {
+          name: "CISTERNA 106",
+          type: "Unidad de abastecimiento de agua",
+          specs: {
+            placa: "A0D-897",
+            modelo: "International 4900",
+            ano: "1998",
+            combustible: "Diésel",
+          },
+          doors: [
+            {
+              title: "Puerta Principal - Sistema de Bombeo",
+              content: [
+                "Bomba centrífuga de alta capacidad",
+                "Mangueras de succión",
+                "Válvulas de control",
+                "Sistema de espumógeno",
+              ],
+            },
+          ],
+        },
+        rescateLigera106: {
+          name: "RESCATE LIGERA 106",
+          type: "Unidad de respuesta rápida",
+          specs: {
+            placa: "AMB-205",
+            modelo: "Toyota Hilux",
+            ano: "2010",
+            combustible: "Gasolina",
+          },
+          doors: [
+            {
+              title: "Puerta Principal - Equipos de Rescate Liviano",
+              content: [
+                "Equipos de primeros auxilios",
+                "Herramientas manuales",
+                "Cuerdas",
+                "Iluminación portátil",
+                "Equipos de comunicación",
+              ],
             },
           ],
         },
