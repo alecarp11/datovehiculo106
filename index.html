@@ -87,6 +87,14 @@
         color: #1976d2;
       }
 
+      .unit-specs {
+        font-size: 0.9rem;
+        color: #666;
+        margin-top: 10px;
+        text-align: left;
+        line-height: 1.4;
+      }
+
       /* Página unidad */
 
       .back-button {
@@ -114,7 +122,7 @@
       .door {
         background-color: rgba(255, 255, 255, 0.95);
         border-radius: 15px;
-        padding: 20px 20px 60px 20px; /* padding bottom aumentado para botón */
+        padding: 20px 20px 60px 20px;
         margin-bottom: 20px;
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
         position: relative;
@@ -169,8 +177,8 @@
         position: absolute;
         bottom: 20px;
         left: 20px;
-        background-color: #1976d2; /* azul */
-        color: #ffcc00; /* amarillo */
+        background-color: #1976d2;
+        color: #ffcc00;
         border: none;
         padding: 8px 14px;
         border-radius: 6px;
@@ -231,11 +239,17 @@
       </div>
 
     <script>
-      // Datos de unidades y puertas
+      // Datos de unidades y puertas con información adicional
       const units = {
         maquina106: {
           name: "MAQUINA 106.01",
           type: "Unidad principal de bomberos",
+          specs: {
+            placa: "EGG-164",
+            modelo: "Ford F-900",
+            ano: "1997",
+            combustible: "Diésel",
+          },
           doors: [
             {
               title: "Puerta 1 - Equipos de Respiración",
@@ -244,7 +258,8 @@
             },
             {
               title: "Puerta 2 - Mangueras y Acoples",
-              content: "Mangueras de alta presión, acoples rápidos y lanzas de agua.",
+              content:
+                "Mangueras de alta presión, acoples rápidos y lanzas de agua.",
             },
             {
               title: "Puerta 3 - Herramientas de Rescate",
@@ -291,6 +306,12 @@
         cisterna106: {
           name: "CISTERNA 106",
           type: "Unidad de abastecimiento de agua",
+          specs: {
+            placa: "A0D-897",
+            modelo: "International 4900",
+            ano: "1998",
+            combustible: "Diésel",
+          },
           doors: [
             {
               title: "Puerta Principal - Sistema de Bombeo",
@@ -302,6 +323,12 @@
         rescateLigera106: {
           name: "RESCATE LIGERA 106",
           type: "Unidad de respuesta rápida",
+          specs: {
+            placa: "AMB-205",
+            modelo: "Toyota Hilux",
+            ano: "2010",
+            combustible: "Gasolina",
+          },
           doors: [
             {
               title: "Puerta Principal - Equipos de Rescate Liviano",
@@ -313,6 +340,12 @@
         rescate106: {
           name: "RESCATE 106",
           type: "Unidad de rescate pesado",
+          specs: {
+            placa: "K1J-747",
+            modelo: "Freightliner M-2",
+            ano: "2005",
+            combustible: "Diésel",
+          },
           doors: [
             {
               title: "Puerta 1 - Herramientas Hidráulicas",
@@ -369,6 +402,12 @@
         ambulancia106: {
           name: "AMBULANCIA 106",
           type: "Unidad de atención médica",
+          specs: {
+            placa: "EGN-450",
+            modelo: "Ford E-350",
+            ano: "2015",
+            combustible: "Gasolina",
+          },
           doors: [
             {
               title: "Puerta Principal - Equipamiento Médico",
@@ -406,6 +445,12 @@
               <div class="unit-card" data-id="${id}">
                 <div class="unit-title">${unit.name}</div>
                 <div class="unit-type">${unit.type}</div>
+                <div class="unit-specs">
+                  <strong>Placa:</strong> ${unit.specs.placa}<br>
+                  <strong>Modelo:</strong> ${unit.specs.modelo}<br>
+                  <strong>Año:</strong> ${unit.specs.ano}<br>
+                  <strong>Combustible:</strong> ${unit.specs.combustible}
+                </div>
               </div>
             `
               )
@@ -441,6 +486,12 @@
           <header>
             <h1>${unit.name}</h1>
             <h2>${unit.type}</h2>
+            <div class="unit-specs" style="text-align:center;">
+              <strong>Placa:</strong> ${unit.specs.placa} |
+              <strong>Modelo:</strong> ${unit.specs.modelo} |
+              <strong>Año:</strong> ${unit.specs.ano} |
+              <strong>Combustible:</strong> ${unit.specs.combustible}
+            </div>
           </header>
           <div class="doors-list">
             ${unit.doors
