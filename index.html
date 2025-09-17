@@ -327,6 +327,7 @@
           type: "Unidad principal de bomberos",
           specs: {
             placa: "EUD266",
+            cbp: "CBVP-325",
             modelo: "SPARTAN",
             ano: "2014",
             combustible: "Diésel",
@@ -422,6 +423,7 @@
           type: "Unidad de abastecimiento de agua",
           specs: {
             placa: "A0D-897",
+            cbp: "CBVP-326",
             modelo: "International 4900",
             ano: "1998",
             combustible: "Diésel",
@@ -443,6 +445,7 @@
           type: "Unidad de respuesta rápida",
           specs: {
             placa: "AMB-205",
+            cbp: "CBVP-327",
             modelo: "Toyota Hilux",
             ano: "2010",
             combustible: "Gasolina",
@@ -465,6 +468,7 @@
           type: "Unidad de rescate pesado",
           specs: {
             placa: "K1J-747",
+            cbp: "CBVP-328",
             modelo: "Freightliner M-2",
             ano: "2005",
             combustible: "Diésel",
@@ -559,6 +563,7 @@
           type: "Unidad de atención médica",
           specs: {
             placa: "EGN-450",
+            cbp: "CBVP-329",
             modelo: "Ford E-350",
             ano: "2015",
             combustible: "Gasolina",
@@ -623,6 +628,7 @@
                 <div class="unit-type">${unit.type}</div>
                 <div class="unit-specs">
                   <strong>Placa:</strong> ${unit.specs.placa}<br>
+                  <strong>CBP:</strong> ${unit.specs.cbp}<br>
                   <strong>Modelo:</strong> ${unit.specs.modelo}<br>
                   <strong>Año:</strong> ${unit.specs.ano}<br>
                   <strong>Combustible:</strong> ${unit.specs.combustible}
@@ -662,6 +668,7 @@
             <h2>${unit.type}</h2>
             <div class="unit-specs" style="text-align:center;">
               <strong>Placa:</strong> ${unit.specs.placa} |
+              <strong>CBP:</strong> ${unit.specs.cbp} |
               <strong>Modelo:</strong> ${unit.specs.modelo} |
               <strong>Año:</strong> ${unit.specs.ano} |
               <strong>Combustible:</strong> ${unit.specs.combustible}
@@ -707,7 +714,7 @@
         `;
 
         document.getElementById("backBtn").addEventListener("click", () => {
-          window.history.back(); // Se cambió para usar el historial del navegador
+          window.history.back();
         });
 
         document.querySelectorAll(".edit-btn").forEach((btn) => {
@@ -839,4 +846,4 @@
       init();
     </script>
   </body>
-</html>    
+</html>
