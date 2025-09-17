@@ -323,23 +323,23 @@
     <script>
       // Datos de unidades y puertas
       const units = {
-        maquina106: {
-          name: "MAQUINA 106.01",
-          type: "Unidad principal de bomberos",
-          specs: {
-            placa: "EUD266"
-            modelo: "SPARTAN",
-            ano: "2014",
-            combustible: "Diésel",
-          },
-          doors: [
-            {
-              title: "Puerta 1 - Equipos de Respiración",
-              content: [
-                "Máscaras de oxígeno",
-                "Tanques de aire comprimido",
-                "Reguladores de presión",
-              ],
+        maquina106: {
+          name: "MAQUINA 106.01",
+          type: "Unidad principal de bomberos",
+          specs: {
+            placa: "EUD266", // <-- Aquí estaba el error
+            modelo: "SPARTAN",
+            ano: "2014",
+            combustible: "Diésel",
+          },
+          doors: [
+            {
+              title: "Puerta 1 - Equipos de Respiración",
+              content: [
+                "Máscaras de oxígeno",
+                "Tanques de aire comprimido",
+                "Reguladores de presión",
+              ],
             },
             {
               title: "Puerta 2 - Mangueras y Acoples",
