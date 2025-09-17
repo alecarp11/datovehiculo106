@@ -8,7 +8,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
       * {
         margin: 0;
@@ -253,29 +252,6 @@
         color: #555;
         font-size: 1.1rem;
         margin-bottom: 0.5rem;
-      }
-      .qr-options {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        margin-top: 20px;
-      }
-      .qr-options button {
-        padding: 12px 20px;
-        border: none;
-        border-radius: 8px;
-        font-size: 1rem;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-      }
-      #viewContentBtn {
-        background-color: #1976d2;
-        color: #ffcc00;
-      }
-      #downloadExcelBtn {
-        background-color: #4caf50;
-        color: white;
       }
 
       /* MEDIA QUERIES PARA ADAPTABILIDAD */
@@ -599,9 +575,7 @@
       }
 
       function generateQR(unitId, doorIndex) {
-        // Usamos window.location.href para obtener la ruta completa,
-        // y agregamos un fragmento (#) en lugar de parámetros de URL (?)
-        const baseUrl = window.location.href.split('#')[0];
+        const baseUrl = window.location.href.split("#")[0];
         const qrContent = `${baseUrl}#unit=${unitId}&door=${doorIndex}`;
         return `https://quickchart.io/qr?text=${encodeURIComponent(
           qrContent
@@ -740,8 +714,8 @@
           });
         });
       }
-      
-      function renderQRPageOptions(unitId, doorIndex) {
+
+      function renderQRPage(unitId, doorIndex) {
         const unit = units[unitId];
         if (!unit || !unit.doors[doorIndex]) {
           renderUnitsList();
@@ -749,78 +723,23 @@
         }
 
         const door = unit.doors[doorIndex];
-        document.title = `Opciones - ${door.title}`;
+        document.title = `${door.title} - ${unit.name}`;
 
         app.innerHTML = `
           <div class="qr-page-container">
+            <button class="back-button" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> Volver</button>
             <h2>${door.title}</h2>
-            <p style="text-align:center;">Seleccione una opción para ver el contenido:</p>
-            <div class="qr-options">
-                <button id="viewContentBtn"><i class="fas fa-eye"></i> Ver Contenido</button>
-                <button id="downloadExcelBtn"><i class="fas fa-file-excel"></i> Descargar Excel</button>
-            </div>
-            <button class="back-button" onclick="window.history.back()" style="margin-top: 20px;"><i class="fas fa-arrow-left"></i> Volver a la Lista</button>
+            <p><strong>Unidad:</strong> ${unit.name}</p>
+            <h3>Equipamiento:</h3>
+            <ul>
+              ${door.content.map((item) => `<li>${item}</li>`).join("")}
+            </ul>
           </div>
           <div class="footer" style="width: 100%;">
             <p>Villa Maria del Triunfo 106 - Compañía de Bomberos Voluntarios</p>
             <p>Sistema de Gestión de Equipos © 2023</p>
           </div>
         `;
-
-        document.getElementById("viewContentBtn").addEventListener("click", () => {
-            renderQRPage(unitId, doorIndex);
-        });
-
-        document.getElementById("downloadExcelBtn").addEventListener("click", () => {
-            downloadExcel(unit, door);
-        });
-      }
-
-      function renderQRPage(unitId, doorIndex) {
-        const unit = units[unitId];
-        if (!unit || !unit.doors[doorIndex]) {
-            renderUnitsList();
-            return;
-        }
-        
-        const door = unit.doors[doorIndex];
-        document.title = `${door.title} - ${unit.name}`;
-
-        app.innerHTML = `
-            <div class="qr-page-container">
-                <button class="back-button" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> Volver</button>
-                <h2>${door.title}</h2>
-                <p><strong>Unidad:</strong> ${unit.name}</p>
-                <h3>Equipamiento:</h3>
-                <ul>
-                    ${door.content.map(item => `<li>${item}</li>`).join('')}
-                </ul>
-            </div>
-            <div class="footer" style="width: 100%;">
-              <p>Villa Maria del Triunfo 106 - Compañía de Bomberos Voluntarios</p>
-              <p>Sistema de Gestión de Equipos © 2023</p>
-            </div>
-        `;
-      }
-      
-      function downloadExcel(unit, door) {
-          const data = [
-              ["Unidad", unit.name],
-              ["Puerta", door.title],
-              [],
-              ["Contenido"]
-          ];
-
-          door.content.forEach(item => {
-              data.push([item]);
-          });
-
-          const ws = XLSX.utils.aoa_to_sheet(data);
-          const wb = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(wb, ws, "Equipamiento");
-
-          const filename = `${unit.name.replace(/\s/g, '_')}_${door.title.replace(/\s/g, '_')}.xlsx`;
-          XLSX.writeFile(wb, filename);
       }
 
       // Detectar cambios en el fragmento de la URL
@@ -835,7 +754,7 @@
         const doorIndex = params.get("door");
 
         if (unitId && doorIndex) {
-          renderQRPageOptions(unitId, doorIndex);
+          renderQRPage(unitId, doorIndex);
         } else if (unitId) {
           renderUnitPage(unitId);
         } else {
@@ -843,7 +762,6 @@
         }
       }
 
-      // Al cargar la página, verificamos si hay un fragmento de URL
       function init() {
         loadData();
         handleUrlFragment();
@@ -852,7 +770,6 @@
       init();
     </script>
   </body>
-</html>
 </html>
 
       
