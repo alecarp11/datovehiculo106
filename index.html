@@ -317,29 +317,28 @@
     </style>
   </head>
   <body>
-    <div class="container" id="app">
-      </div>
+    <div class="container" id="app"></div>
 
     <script>
       // Datos de unidades y puertas
       const units = {
-        maquina106: {
-          name: "MAQUINA 106.01",
-          type: "Unidad principal de bomberos",
-          specs: {
-            placa: "EUD266", // <-- Aquí estaba el error
-            modelo: "SPARTAN",
-            ano: "2014",
-            combustible: "Diésel",
-          },
-          doors: [
-            {
-              title: "Puerta 1 - Equipos de Respiración",
-              content: [
-                "Máscaras de oxígeno",
-                "Tanques de aire comprimido",
-                "Reguladores de presión",
-              ],
+        maquina106: {
+          name: "MAQUINA 106.01",
+          type: "Unidad principal de bomberos",
+          specs: {
+            placa: "EUD266",
+            modelo: "SPARTAN",
+            ano: "2014",
+            combustible: "Diésel",
+          },
+          doors: [
+            {
+              title: "Puerta 1 - Equipos de Respiración",
+              content: [
+                "Máscaras de oxígeno",
+                "Tanques de aire comprimido",
+                "Reguladores de presión",
+              ],
             },
             {
               title: "Puerta 2 - Mangueras y Acoples",
@@ -419,14 +418,14 @@
           ],
         },
         cisterna106: {
-          name: "CISTERNA 106",
-          type: "Unidad de abastecimiento de agua",
-          specs: {
-            placa: "A0D-897",
-            modelo: "International 4900",
-            ano: "1998",
-            combustible: "Diésel",
-          },
+          name: "CISTERNA 106",
+          type: "Unidad de abastecimiento de agua",
+          specs: {
+            placa: "A0D-897",
+            modelo: "International 4900",
+            ano: "1998",
+            combustible: "Diésel",
+          },
           doors: [
             {
               title: "Puerta Principal - Sistema de Bombeo",
@@ -708,8 +707,7 @@
         `;
 
         document.getElementById("backBtn").addEventListener("click", () => {
-          renderUnitsList();
-          history.pushState({}, "", window.location.pathname);
+          window.history.back(); // Se cambió para usar el historial del navegador
         });
 
         document.querySelectorAll(".edit-btn").forEach((btn) => {
@@ -841,4 +839,4 @@
       init();
     </script>
   </body>
-</html>     
+</html>    
