@@ -143,10 +143,27 @@
         font-size: 1.3rem;
       }
 
-      .door-content {
+      /* Estilos para la lista numerada */
+      .door-content ol {
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      .door-content ol li {
         color: #555;
         font-size: 1rem;
-        white-space: pre-wrap;
+        margin-bottom: 5px;
+      }
+
+      /* Estilo para el área de texto editable */
+      .door-content textarea {
+        width: 100%;
+        min-height: 100px;
+        border: 1px solid #1976d2;
+        padding: 5px;
+        font-size: 1rem;
+        line-height: 1.6;
+        resize: vertical;
       }
 
       .qr-code {
@@ -253,53 +270,86 @@
           doors: [
             {
               title: "Puerta 1 - Equipos de Respiración",
-              content:
-                "Máscaras de oxígeno, tanques de aire comprimido y reguladores de presión.",
+              content: [
+                "Máscaras de oxígeno",
+                "Tanques de aire comprimido",
+                "Reguladores de presión",
+              ],
             },
             {
               title: "Puerta 2 - Mangueras y Acoples",
-              content:
-                "Mangueras de alta presión, acoples rápidos y lanzas de agua.",
+              content: [
+                "Mangueras de alta presión",
+                "Acoples rápidos",
+                "Lanzas de agua",
+              ],
             },
             {
               title: "Puerta 3 - Herramientas de Rescate",
-              content:
-                "Hidráulicas, motosierras, herramientas de forcé y equipos de estabilización.",
+              content: [
+                "Hidráulicas",
+                "Motosierras",
+                "Herramientas de forcé",
+                "Equipos de estabilización",
+              ],
             },
             {
               title: "Puerta 4 - Equipos de Comunicación",
-              content:
-                "Radios portátiles, repetidoras y equipos de comunicación de emergencia.",
+              content: [
+                "Radios portátiles",
+                "Repetidoras",
+                "Equipos de comunicación de emergencia",
+              ],
             },
             {
               title: "Puerta 5 - Equipos Médicos",
-              content:
-                "Botiquines de primeros auxilios, camillas, collarines y equipos de inmovilización.",
+              content: [
+                "Botiquines de primeros auxilios",
+                "Camillas",
+                "Collarines",
+                "Equipos de inmovilización",
+              ],
             },
             {
               title: "Puerta 6 - Iluminación",
-              content:
-                "Focus de iluminación, generadores eléctricos y equipos de alumbrado.",
+              content: [
+                "Focus de iluminación",
+                "Generadores eléctricos",
+                "Equipos de alumbrado",
+              ],
             },
             {
               title: "Puerta 7 - Escalas y Cuerdas",
-              content:
-                "Escalas de gancho, cuerdas de rescate, arneses y equipos de altura.",
+              content: [
+                "Escalas de gancho",
+                "Cuerdas de rescate",
+                "Arneses y equipos de altura",
+              ],
             },
             {
               title: "Puerta 8 - Equipos de Detección",
-              content:
-                "Detectores de gas, térmicos, cámaras térmicas y equipos de medición.",
+              content: [
+                "Detectores de gas",
+                "Térmicos",
+                "Cámaras térmicas",
+                "Equipos de medición",
+              ],
             },
             {
               title: "Puerta 9 - Material Diverso",
-              content:
-                "Herramientas manuales, equipos de limpieza y material de mantenimiento.",
+              content: [
+                "Herramientas manuales",
+                "Equipos de limpieza",
+                "Material de mantenimiento",
+              ],
             },
             {
               title: "Puerta 10 - Equipos de Protección",
-              content:
-                "Trajes de protección química, guantes, botas y cascos de seguridad.",
+              content: [
+                "Trajes de protección química",
+                "Guantes",
+                "Botas y cascos de seguridad",
+              ],
             },
           ],
         },
@@ -315,8 +365,12 @@
           doors: [
             {
               title: "Puerta Principal - Sistema de Bombeo",
-              content:
-                "Bomba centrífuga de alta capacidad, mangueras de succión, válvulas de control y sistema de espumógeno.",
+              content: [
+                "Bomba centrífuga de alta capacidad",
+                "Mangueras de succión",
+                "Válvulas de control",
+                "Sistema de espumógeno",
+              ],
             },
           ],
         },
@@ -332,8 +386,13 @@
           doors: [
             {
               title: "Puerta Principal - Equipos de Rescate Liviano",
-              content:
-                "Equipos de primeros auxilios, herramientas manuales, cuerdas, iluminación portátil y equipos de comunicación.",
+              content: [
+                "Equipos de primeros auxilios",
+                "Herramientas manuales",
+                "Cuerdas",
+                "Iluminación portátil",
+                "Equipos de comunicación",
+              ],
             },
           ],
         },
@@ -349,53 +408,85 @@
           doors: [
             {
               title: "Puerta 1 - Herramientas Hidráulicas",
-              content:
-                "Cizallas, expansores, cilindros y power units para rescate vehicular.",
+              content: [
+                "Cizallas",
+                "Expansores",
+                "Cilindros",
+                "Power units para rescate vehicular",
+              ],
             },
             {
               title: "Puerta 2 - Equipos de Estabilización",
-              content:
-                "Gatos, puntales, cuñas y sistemas de estabilización vehicular.",
+              content: [
+                "Gatos",
+                "Puntales",
+                "Cuñas",
+                "Sistemas de estabilización vehicular",
+              ],
             },
             {
               title: "Puerta 3 - Equipos de Elevación",
-              content:
-                "Gatos de alto tonelaje, sistemas de elevación por aire y equipos de levante.",
+              content: [
+                "Gatos de alto tonelaje",
+                "Sistemas de elevación por aire",
+                "Equipos de levante",
+              ],
             },
             {
               title: "Puerta 4 - Equipos de Iluminación",
-              content:
-                "Torres de iluminación, focus de alta intensidad y generadores eléctricos.",
+              content: [
+                "Torres de iluminación",
+                "Focus de alta intensidad",
+                "Generadores eléctricos",
+              ],
             },
             {
               title: "Puerta 5 - Equipos de Corte",
-              content:
-                "Motosierras, equipos de oxicorte y herramientas de corte especializadas.",
+              content: [
+                "Motosierras",
+                "Equipos de oxicorte",
+                "Herramientas de corte especializadas",
+              ],
             },
             {
               title: "Puerta 6 - Equipos de Comunicación",
-              content:
-                "Radios de largo alcance, sistemas de intercomunicación y equipos de enlace.",
+              content: [
+                "Radios de largo alcance",
+                "Sistemas de intercomunicación",
+                "Equipos de enlace",
+              ],
             },
             {
               title: "Puerta 7 - Equipos de Detección",
-              content:
-                "Detectores de gases, cámaras térmicas y equipos de medición ambiental.",
+              content: [
+                "Detectores de gases",
+                "Cámaras térmicas",
+                "Equipos de medición ambiental",
+              ],
             },
             {
               title: "Puerta 8 - Equipos de Ventilación",
-              content:
-                "Ventiladores de presión positiva, extractores de humo y equipos de renovación de aire.",
+              content: [
+                "Ventiladores de presión positiva",
+                "Extractores de humo",
+                "Equipos de renovación de aire",
+              ],
             },
             {
               title: "Puerta 9 - Equipos de Sostenimiento",
-              content:
-                "Material de apuntalamiento, sistemas de entibación y equipos de soporte estructural.",
+              content: [
+                "Material de apuntalamiento",
+                "Sistemas de entibación",
+                "Equipos de soporte estructural",
+              ],
             },
             {
               title: "Puerta 10 - Equipos Especializados",
-              content:
-                "Material para rescate en altura, espacios confinados y situaciones especiales.",
+              content: [
+                "Material para rescate en altura",
+                "Espacios confinados",
+                "Situaciones especiales",
+              ],
             },
           ],
         },
@@ -411,17 +502,33 @@
           doors: [
             {
               title: "Puerta Principal - Equipamiento Médico",
-              content:
-                "Camilla, botiquines de avanzada, equipos de oxígeno, monitor desfibrilador y material de inmovilización.",
+              content: [
+                "Camilla",
+                "Botiquines de avanzada",
+                "Equipos de oxígeno",
+                "Monitor desfibrilador",
+                "Material de inmovilización",
+              ],
             },
           ],
         },
       };
 
       const app = document.getElementById("app");
-
-      // Establece la contraseña para editar
       const correctPassword = "106";
+      
+      // Función para guardar los datos en localStorage
+      function saveData() {
+        localStorage.setItem("unitsData", JSON.stringify(units));
+      }
+
+      // Función para cargar los datos desde localStorage
+      function loadData() {
+        const storedData = localStorage.getItem("unitsData");
+        if (storedData) {
+          Object.assign(units, JSON.parse(storedData));
+        }
+      }
 
       // Función para generar URL QR con texto codificado
       function generateQR(text) {
@@ -503,7 +610,11 @@
               <div class="door" data-door-index="${index}">
                 <div class="door-info">
                   <div class="door-title">${door.title}</div>
-                  <div class="door-content">${door.content}</div>
+                  <div class="door-content">
+                    <ol>
+                      ${door.content.map((item) => `<li>${item}</li>`).join("")}
+                    </ol>
+                  </div>
                 </div>
                 <div class="qr-code">
                   <img src="${generateQR(
@@ -539,26 +650,23 @@
             const doorContentDiv = doorDiv.querySelector(".door-content");
             const doorIndex = parseInt(doorDiv.getAttribute("data-door-index"));
             
-            // Si ya está en modo de edición, simplemente guarda
+            // Si ya está en modo de edición, simplemente guarda y sale del modo
             if (doorContentDiv.contentEditable === "true") {
-              const newContent = doorContentDiv.textContent.trim();
+              // Convertir el texto del textarea de nuevo a un array
+              const newContent = doorContentDiv.querySelector("textarea").value.split('\n').filter(Boolean).map(item => item.trim());
               unit.doors[doorIndex].content = newContent;
-              doorContentDiv.contentEditable = "false";
-              doorContentDiv.style.border = "none";
-              doorContentDiv.style.padding = "0";
-              btn.innerHTML = '<i class="fas fa-edit"></i> Editar';
+              saveData(); // Guardar automáticamente
+              renderUnitPage(unitId); // Volver a renderizar para ver los cambios guardados
             } else {
               // Si no está en modo de edición, pide la contraseña
               const password = prompt("Por favor, ingrese la contraseña para editar:");
               if (password === correctPassword) {
                 // Habilitar edición si la contraseña es correcta
-                doorContentDiv.contentEditable = "true";
-                doorContentDiv.focus();
-                doorContentDiv.style.border = "1px solid #1976d2";
-                doorContentDiv.style.padding = "5px";
+                const currentContentText = unit.doors[doorIndex].content.join('\n');
+                doorContentDiv.innerHTML = `<textarea>${currentContentText}</textarea>`;
+                doorContentDiv.querySelector("textarea").focus();
                 btn.innerHTML = '<i class="fas fa-save"></i> Guardar';
               } else if (password !== null) {
-                // Muestra un mensaje si la contraseña es incorrecta (y el usuario no canceló)
                 alert("Contraseña incorrecta. No se puede editar.");
               }
             }
@@ -575,8 +683,9 @@
         }
       });
 
-      // Al cargar la página, si hay ?unit=xxx en URL, mostrar esa unidad
+      // Al cargar la página, cargar los datos guardados antes de renderizar
       function init() {
+        loadData();
         const params = new URLSearchParams(window.location.search);
         const unitId = params.get("unit");
         if (unitId && units[unitId]) {
@@ -590,7 +699,5 @@
 
       init();
     </script>
-  </body>
-</html>
   </body>
 </html>
