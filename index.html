@@ -45,22 +45,30 @@
         margin: 0 auto;
         width: 100%; /* Asegura que el contenedor ocupe el ancho completo disponible */
         z-index: 1; /* Asegura que el contenido esté por encima del logo de fondo */
+        position: relative; /* Para asegurar que el contenido esté por encima del logo central */
       }
 
-      /* --- Logo de fondo (marca de agua) --- */
-      .background-logo {
-        position: fixed; /* Fijo en la pantalla */
-        bottom: 20px;
-        right: 20px;
-        opacity: 0.15; /* Opacidad para efecto de marca de agua */
-        z-index: 0; /* Detrás del contenido */
+      /* --- Logo principal de fondo (super grande) --- */
+      .main-logo-container {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%; /* Ocupa todo el ancho disponible */
+        height: 100%; /* Ocupa toda la altura disponible */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0.15; /* Más oscuro */
+        z-index: 0; /* Detrás de todo el contenido */
         pointer-events: none; /* No interactuable con el ratón */
       }
-      .background-logo img {
-        width: 200px; /* Tamaño del logo de fondo */
+      .main-logo-container img {
+        width: 80vw; /* 80% del ancho del viewport */
         height: auto;
+        max-width: 800px; /* Limita el tamaño máximo para que no sea excesivo en pantallas muy grandes */
+        max-height: 80vh; /* Limita la altura máxima para que no sea excesiva */
       }
-
 
       /* --- Encabezado --- */
       header {
@@ -86,6 +94,19 @@
         font-size: 1.8rem;
         color: var(--color-azul-marino);
         margin-bottom: 20px;
+        /* Ajuste para el logo pequeño */
+        display: flex; /* Permite alinear elementos */
+        align-items: center; /* Centrar verticalmente */
+        justify-content: center; /* Centrar el bloque de texto y logo */
+      }
+
+      /* Logo pequeño al lado de Compañía de Bomberos */
+      .header-logo-small {
+        width: 80px; /* Más grande */
+        height: auto;
+        margin-left: 25px; /* Más a la derecha */
+        margin-right: 10px; /* Espacio a su derecha */
+        vertical-align: middle; /* Alineación vertical con el texto */
       }
 
       /* --- Lista de Unidades --- */
@@ -338,6 +359,8 @@
 
         h2 {
           font-size: 1.5rem;
+          /* Asegurar que el texto y el logo pequeño se centren como un bloque */
+          justify-content: center;
         }
 
         .door {
@@ -351,18 +374,22 @@
           width: 100%;
           margin-top: 15px;
         }
-        .background-logo img {
-            width: 120px; /* Reduce el tamaño del logo de fondo en móviles */
+        .main-logo-container img {
+            width: 90vw; /* Más grande en móviles */
+        }
+        .header-logo-small {
+            width: 60px; /* Más grande en móviles */
+            margin-left: 15px; /* Ajuste para móviles */
         }
       }
     </style>
   </head>
   <body>
-    <div class="container" id="app"></div>
-
-    <div class="background-logo">
-      <img src="https://raw.githubusercontent.com/alecarp11/datovehiculo106/12f1bb5f5bcef285e1aef26aec62044cfc877b90/Dise%C3%B1o%20sin%20t%C3%ADtulo%20(4).png" alt="Logo Compañía de Bomberos VMT 106">
+    <div class="main-logo-container">
+      <img src="https://raw.githubusercontent.com/alecarp11/datovehiculo106/12f1bb5f5bcef285e1aef26aec62044cfc877b90/Dise%C3%B1o%20sin%20t%C3%ADtulo%20(4).png" alt="Logo Compañía de Bomberos VMT 106 - Grande">
     </div>
+
+    <div class="container" id="app"></div>
 
     <script>
       // El resto del código JavaScript no ha cambiado y se mantiene igual.
@@ -665,7 +692,7 @@
         app.innerHTML = `
             <header>
               <h1>Villa Maria del Triunfo 106</h1>
-              <h2>Compañía de Bomberos</h2>
+              <h2>Compañía de Bomberos <img src="https://raw.githubusercontent.com/alecarp11/datovehiculo106/12f1bb5f5bcef285e1aef26aec62044cfc877b90/Dise%C3%B1o%20sin%20t%C3%ADtulo%20(4).png" alt="Logo Compañía de Bomberos VMT 106 - Pequeño" class="header-logo-small"></h2>
               <p>Sistema de gestión de unidades y equipamiento</p>
             </header>
             <div class="units-list">
@@ -714,7 +741,7 @@
           <button class="back-button" id="backBtn"><i class="fas fa-arrow-left"></i> Volver</button>
           <header>
             <h1>${unit.name}</h1>
-            <h2>${unit.type}</h2>
+            <h2>${unit.type} <img src="https://raw.githubusercontent.com/alecarp11/datovehiculo106/12f1bb5f5bcef285e1aef26aec62044cfc877b90/Dise%C3%B1o%20sin%20t%C3%ADtulo%20(4).png" alt="Logo Compañía de Bomberos VMT 106 - Pequeño" class="header-logo-small"></h2>
             <div class="unit-specs" style="text-align:center;">
               <strong>Placa:</strong> ${unit.specs.placa} |
               <strong>CBP:</strong> ${unit.specs.cbp} |
@@ -792,8 +819,8 @@
                 const currentContentText =
                   units[unitId].doors[doorIndex].content.join("\n");
                 doorContentDiv.innerHTML = `<textarea>${currentContentText}</textarea>`;
-                doorContentDiv.querySelector("textarea").focus();
                 btn.innerHTML = '<i class="fas fa-save"></i> Guardar';
+                doorContentDiv.querySelector("textarea").focus();
               } else if (password !== null) {
                 alert("Contraseña incorrecta. No se puede editar.");
               }
