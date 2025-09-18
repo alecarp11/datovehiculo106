@@ -10,6 +10,17 @@
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
+      /* --- Colores de la paleta de bomberos --- */
+      :root {
+        --color-rojo-bombero: #d32f2f;
+        --color-amarillo-claro: #ffeb3b;
+        --color-amarillo-oscuro: #ffc107;
+        --color-azul-marino: #1976d2;
+        --color-gris-claro: #f4f4f4;
+        --color-texto: #333;
+        --color-blanco: #ffffff;
+      }
+
       * {
         margin: 0;
         padding: 0;
@@ -18,9 +29,8 @@
       }
 
       body {
-        /* Color de fondo amarillo actualizado */
-        background: linear-gradient(135deg, #FFEB3B 0%, #FFC107 100%);
-        color: #333;
+        background: linear-gradient(135deg, var(--color-amarillo-claro), var(--color-amarillo-oscuro));
+        color: var(--color-texto);
         line-height: 1.6;
         padding: 20px;
         min-height: 100vh;
@@ -34,6 +44,7 @@
         margin: 0 auto;
       }
 
+      /* --- Encabezado y Logo --- */
       header {
         text-align: center;
         padding: 30px 0;
@@ -41,21 +52,36 @@
         background-color: rgba(255, 255, 255, 0.9);
         border-radius: 15px;
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .logo-container {
+        margin-bottom: 20px;
+      }
+
+      .logo-container img {
+        width: 120px;
+        height: auto;
+        border-radius: 50%;
+        border: 4px solid var(--color-azul-marino);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
       }
 
       h1 {
         font-size: 2.8rem;
-        color: #d32f2f;
+        color: var(--color-rojo-bombero);
         margin-bottom: 10px;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
       }
 
       h2 {
         font-size: 1.8rem;
-        color: #1976d2;
+        color: var(--color-azul-marino);
         margin-bottom: 20px;
       }
 
+      /* --- Lista de Unidades --- */
       .units-list {
         display: flex;
         flex-wrap: wrap;
@@ -70,7 +96,7 @@
         overflow: hidden;
         box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
         cursor: pointer;
-        transition: transform 0.3s ease;
+        transition: transform 0.3s ease, background-color 0.3s ease;
         padding: 20px;
         text-align: center;
         width: 100%;
@@ -79,20 +105,20 @@
 
       .unit-card:hover {
         transform: translateY(-5px);
-        background: #fff8e1;
+        background: var(--color-gris-claro);
       }
 
       .unit-title {
         font-size: 1.4rem;
         font-weight: bold;
-        color: #d32f2f;
+        color: var(--color-rojo-bombero);
         margin-bottom: 8px;
       }
 
       .unit-type {
         font-size: 1rem;
         opacity: 0.9;
-        color: #1976d2;
+        color: var(--color-azul-marino);
       }
 
       .unit-specs {
@@ -103,10 +129,10 @@
         line-height: 1.4;
       }
 
-      /* Página unidad */
+      /* --- Página de Unidad --- */
       .back-button {
-        background-color: #1976d2;
-        color: #ffcc00;
+        background-color: var(--color-azul-marino);
+        color: var(--color-amarillo-claro);
         border: none;
         padding: 10px 18px;
         border-radius: 8px;
@@ -137,6 +163,11 @@
         flex-wrap: wrap;
         align-items: center;
         gap: 20px;
+        transition: transform 0.3s ease;
+      }
+      
+      .door:hover {
+        transform: translateY(-3px);
       }
 
       .door-info {
@@ -145,7 +176,7 @@
 
       .door-title {
         font-weight: bold;
-        color: #1976d2;
+        color: var(--color-azul-marino);
         margin-bottom: 10px;
         font-size: 1.3rem;
       }
@@ -164,7 +195,7 @@
       .door-content textarea {
         width: 100%;
         min-height: 100px;
-        border: 1px solid #1976d2;
+        border: 1px solid var(--color-azul-marino);
         padding: 5px;
         font-size: 1rem;
         line-height: 1.6;
@@ -185,7 +216,7 @@
         border: 1px solid #ddd;
         border-radius: 12px;
         padding: 5px;
-        background-color: white;
+        background-color: var(--color-blanco);
       }
 
       .qr-text {
@@ -194,7 +225,7 @@
         color: #777;
       }
 
-      /* Botones de acción */
+      /* --- Botones de acción --- */
       .action-buttons {
         position: absolute;
         bottom: 20px;
@@ -209,7 +240,7 @@
         font-weight: bold;
         cursor: pointer;
         box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s ease;
+        transition: transform 0.2s ease, background-color 0.2s ease;
         display: flex;
         align-items: center;
         gap: 6px;
@@ -221,8 +252,8 @@
       }
 
       .edit-btn {
-        background-color: #1976d2;
-        color: #ffcc00;
+        background-color: var(--color-azul-marino);
+        color: var(--color-amarillo-claro);
       }
       .edit-btn:hover {
         background-color: #145ea8;
@@ -230,7 +261,7 @@
 
       .download-btn {
         background-color: #4caf50;
-        color: white;
+        color: var(--color-blanco);
       }
       .download-btn:hover {
         background-color: #45a049;
@@ -245,7 +276,7 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       }
 
-      /* Estilos para la vista de QR */
+      /* --- Estilos para la vista de QR --- */
       .qr-page-container {
         padding: 2rem;
         background-color: rgba(255, 255, 255, 0.95);
@@ -256,13 +287,13 @@
         margin-top: 40px;
       }
       .qr-page-container h2 {
-        color: #1976d2;
+        color: var(--color-azul-marino);
         margin-bottom: 1rem;
         font-size: 1.8rem;
         text-align: center;
       }
       .qr-page-container h3 {
-        color: #d32f2f;
+        color: var(--color-rojo-bombero);
       }
       .qr-page-container ul {
         margin: 0;
@@ -274,7 +305,7 @@
         margin-bottom: 0.5rem;
       }
 
-      /* MEDIA QUERIES PARA ADAPTABILIDAD */
+      /* --- MEDIA QUERIES PARA ADAPTABILIDAD --- */
       @media (min-width: 768px) {
         .units-list {
           flex-direction: row;
@@ -317,7 +348,8 @@
     <div class="container" id="app"></div>
 
     <script>
-      // Datos de unidades y puertas
+      // El resto del código JavaScript no ha cambiado y se mantiene igual.
+      // ... (código JavaScript completo aquí) ...
       const units = {
         maquina106: {
           name: "MAQUINA 106.01",
@@ -448,28 +480,15 @@
             },
             {
               title: "Puerta Enrollable N°6 ",
-              content: [
-                "",
-                "",
-                "",
-              ],
+              content: ["", "", ""],
             },
             {
               title: "Puerta Enrollable N°7 ",
-              content: [
-                "",
-                "",
-                "",
-              ],
+              content: ["", "", ""],
             },
             {
               title: "Puerta Enrollable N°8 ",
-              content: [
-                "",
-                "",
-                "",
-                "",
-              ],
+              content: ["", "", "", ""],
             },
             {
               title: "Puerta Enrollable Nº 9",
@@ -503,12 +522,7 @@
           doors: [
             {
               title: "Puerta Principal (General)",
-              content: [
-                "",
-                "",
-                "",
-                "",
-              ],
+              content: ["", "", "", "", ""],
             },
           ],
         },
@@ -525,13 +539,7 @@
           doors: [
             {
               title: "Puerta Principal - (General)",
-              content: [
-                "",
-                "",
-                "",
-                "",
-                "",
-              ],
+              content: ["", "", "", "", "", ""],
             },
           ],
         },
@@ -548,85 +556,43 @@
           doors: [
             {
               title: "Puerta 1 ",
-              content: [
-                "",
-                "",
-                "",
-                "",
-              ],
+              content: ["", "", "", "", ""],
             },
             {
               title: "Puerta 2",
-              content: [
-                "",
-                "",
-                "",
-                "",
-              ],
+              content: ["", "", "", "", ""],
             },
             {
               title: "Puerta 3",
-              content: [
-                "",
-                "",
-                "",
-              ],
+              content: ["", "", "", ""],
             },
             {
               title: "Puerta 4 ",
-              content: [
-                "",
-                "",
-                "",
-              ],
+              content: ["", "", "", ""],
             },
             {
               title: "Puerta 5",
-              content: [
-                "",
-                "",
-                "",
-              ],
+              content: ["", "", "", ""],
             },
             {
               title: "Puerta 6 ",
-              content: [
-                "",
-                "",
-                "",
-              ],
+              content: ["", "", "", ""],
             },
             {
               title: "Puerta 7 ",
-              content: [
-                "",
-                "",
-                "",
-              ],
+              content: ["", "", "", ""],
             },
             {
               title: "Puerta 8 ",
-              content: [
-                "",
-                "",
-                "",
-              ],
+              content: ["", "", "", ""],
             },
             {
               title: "Puerta 9 ",
-              content: [
-                "",
-                "",
-                "",
-              ],
+              content: ["", "", "", ""],
             },
             {
               title: "Puerta 10 ",
-              content: [
-                "",
-                "",
-                "",
-              ],
+              content: ["", "", "", ""],
             },
           ],
         },
@@ -643,13 +609,7 @@
           doors: [
             {
               title: "Puerta Principal - Equipamiento Médico",
-              content: [
-                "",
-                "",
-                "",
-                "",
-                "",
-              ],
+              content: ["", "", "", "", "", ""],
             },
           ],
         },
@@ -678,41 +638,46 @@
       function generateQR(unitId, doorIndex) {
         const baseUrl = window.location.href.split("#")[0];
         const qrContent = `${baseUrl}#door=${unitId}-${doorIndex}`;
-        return `https://quickchart.io/qr?text=${encodeURIComponent(qrContent)}&size=120`;
+        return `https://quickchart.io/qr?text=${encodeURIComponent(
+          qrContent
+        )}&size=120`;
       }
 
       function renderUnitsList() {
         document.title = "Villa Maria del Triunfo 106 - Compañía de Bomberos";
         app.innerHTML = `
-          <header>
-            <h1>Villa Maria del Triunfo 106</h1>
-            <h2>Compañía de Bomberos</h2>
-            <p>Sistema de gestión de unidades y equipamiento</p>
-          </header>
-          <div class="units-list">
-            ${Object.entries(units)
-              .map(
-                ([id, unit]) => `
-              <div class="unit-card" data-id="${id}">
-                <div class="unit-title">${unit.name}</div>
-                <div class="unit-type">${unit.type}</div>
-                <div class="unit-specs">
-                  <strong>Placa:</strong> ${unit.specs.placa}<br>
-                  <strong>CBP:</strong> ${unit.specs.cbp}<br>
-                  <strong>Modelo:</strong> ${unit.specs.modelo}<br>
-                  <strong>Año:</strong> ${unit.specs.ano}<br>
-                  <strong>Combustible:</strong> ${unit.specs.combustible}
-                </div>
+            <header>
+              <div class="logo-container">
+                <img src="https://raw.githubusercontent.com/alecarp11/datovehiculo106/12f1bb5f5bcef285e1aef26aec62044cfc877b90/Dise%C3%B1o%20sin%20t%C3%ADtulo%20(4).png" alt="Logo Compañía de Bomberos VMT 106">
               </div>
-            `
-              )
-              .join("")}
-          </div>
-          <div class="footer">
-            <p>Villa Maria del Triunfo 106 - Compañía de Bomberos Voluntarios</p>
-            <p>Sistema de Gestión de Equipos © 2023</p>
-          </div>
-        `;
+              <h1>Villa Maria del Triunfo 106</h1>
+              <h2>Compañía de Bomberos</h2>
+              <p>Sistema de gestión de unidades y equipamiento</p>
+            </header>
+            <div class="units-list">
+              ${Object.entries(units)
+                .map(
+                  ([id, unit]) => `
+                <div class="unit-card" data-id="${id}">
+                  <div class="unit-title">${unit.name}</div>
+                  <div class="unit-type">${unit.type}</div>
+                  <div class="unit-specs">
+                    <strong>Placa:</strong> ${unit.specs.placa}<br>
+                    <strong>CBP:</strong> ${unit.specs.cbp}<br>
+                    <strong>Modelo:</strong> ${unit.specs.modelo}<br>
+                    <strong>Año:</strong> ${unit.specs.ano}<br>
+                    <strong>Combustible:</strong> ${unit.specs.combustible}
+                  </div>
+                </div>
+              `
+                )
+                .join("")}
+            </div>
+            <div class="footer">
+              <p>Villa Maria del Triunfo 106 - Compañía de Bomberos Voluntarios</p>
+              <p>Sistema de Gestión de Equipos © 2023</p>
+            </div>
+          `;
 
         document.querySelectorAll(".unit-card").forEach((card) => {
           card.addEventListener("click", () => {
@@ -796,7 +761,7 @@
             const unitIdForPassword = btn.getAttribute("data-unit-id");
             const correctPassword = passwords[unitIdForPassword];
 
-            if (btn.textContent.includes('Guardar')) {
+            if (btn.textContent.includes("Guardar")) {
               const newContent = doorContentDiv
                 .querySelector("textarea")
                 .value.split("\n")
@@ -810,7 +775,8 @@
                 "Por favor, ingrese la contraseña para editar:"
               );
               if (password === correctPassword) {
-                const currentContentText = units[unitId].doors[doorIndex].content.join("\n");
+                const currentContentText =
+                  units[unitId].doors[doorIndex].content.join("\n");
                 doorContentDiv.innerHTML = `<textarea>${currentContentText}</textarea>`;
                 doorContentDiv.querySelector("textarea").focus();
                 btn.innerHTML = '<i class="fas fa-save"></i> Guardar';
@@ -821,7 +787,7 @@
           });
         });
 
-        document.querySelectorAll(".download-btn").forEach(btn => {
+        document.querySelectorAll(".download-btn").forEach((btn) => {
           btn.addEventListener("click", (e) => {
             e.stopPropagation();
             const doorDiv = btn.closest(".door");
@@ -851,7 +817,7 @@
             <p><strong>Unidad:</strong> ${unit.name}</p>
             <h3>Equipamiento:</h3>
             <ul>
-              ${door.content.map(item => `<li>${item}</li>`).join('')}
+              ${door.content.map((item) => `<li>${item}</li>`).join("")}
             </ul>
           </div>
         `;
@@ -866,10 +832,10 @@
           ["Unidad", unit.name],
           ["Puerta", door.title],
           [],
-          ["Contenido"]
+          ["Contenido"],
         ];
 
-        door.content.forEach(item => {
+        door.content.forEach((item) => {
           data.push([item]);
         });
 
@@ -877,7 +843,10 @@
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Equipamiento");
 
-        const filename = `${unit.name.replace(/\s/g, '_')}_${door.title.replace(/\s/g, '_')}.xlsx`;
+        const filename = `${unit.name.replace(/\s/g, "_")}_${door.title.replace(
+          /\s/g,
+          "_"
+        )}.xlsx`;
         XLSX.writeFile(wb, filename);
       }
 
@@ -887,7 +856,7 @@
         const doorParam = params.get("door");
 
         if (doorParam) {
-          const [unitId, doorIndex] = doorParam.split('-');
+          const [unitId, doorIndex] = doorParam.split("-");
           if (unitId && doorIndex) {
             renderDoorPage(unitId, parseInt(doorIndex));
           } else {
