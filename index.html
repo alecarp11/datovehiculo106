@@ -37,14 +37,32 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        position: relative; /* Necesario para posicionar el logo de fondo */
       }
 
       .container {
         max-width: 900px;
         margin: 0 auto;
+        width: 100%; /* Asegura que el contenedor ocupe el ancho completo disponible */
+        z-index: 1; /* Asegura que el contenido esté por encima del logo de fondo */
       }
 
-      /* --- Encabezado y Logo --- */
+      /* --- Logo de fondo (marca de agua) --- */
+      .background-logo {
+        position: fixed; /* Fijo en la pantalla */
+        bottom: 20px;
+        right: 20px;
+        opacity: 0.15; /* Opacidad para efecto de marca de agua */
+        z-index: 0; /* Detrás del contenido */
+        pointer-events: none; /* No interactuable con el ratón */
+      }
+      .background-logo img {
+        width: 200px; /* Tamaño del logo de fondo */
+        height: auto;
+      }
+
+
+      /* --- Encabezado --- */
       header {
         text-align: center;
         padding: 30px 0;
@@ -54,19 +72,7 @@
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         position: relative;
         overflow: hidden;
-      }
-
-      .logo-container {
-        margin-bottom: 20px;
-      }
-
-      .logo-container img {
-        width: 150px; /* Aumentado el tamaño del logo */
-        height: auto;
-        /* Se eliminan el border-radius y el border para que no tenga círculo */
-        /* border-radius: 50%; */
-        /* border: 4px solid var(--color-azul-marino); */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        width: 100%; /* Asegura que el header ocupe el ancho completo */
       }
 
       h1 {
@@ -102,7 +108,7 @@
         text-align: center;
         width: 100%;
         max-width: 280px;
-        border: 2px solid var(--color-azul-marino); /* Marco azul marino */
+        border: 3px solid var(--color-azul-marino); /* Marco más grueso */
       }
 
       .unit-card:hover {
@@ -166,6 +172,7 @@
         align-items: center;
         gap: 20px;
         transition: transform 0.3s ease;
+        border: 3px solid var(--color-azul-marino); /* Marco más grueso */
       }
       
       .door:hover {
@@ -287,6 +294,7 @@
         max-width: 600px;
         text-align: left;
         margin-top: 40px;
+        border: 3px solid var(--color-azul-marino); /* Marco más grueso */
       }
       .qr-page-container h2 {
         color: var(--color-azul-marino);
@@ -343,11 +351,18 @@
           width: 100%;
           margin-top: 15px;
         }
+        .background-logo img {
+            width: 120px; /* Reduce el tamaño del logo de fondo en móviles */
+        }
       }
     </style>
   </head>
   <body>
     <div class="container" id="app"></div>
+
+    <div class="background-logo">
+      <img src="https://raw.githubusercontent.com/alecarp11/datovehiculo106/12f1bb5f5bcef285e1aef26aec62044cfc877b90/Dise%C3%B1o%20sin%20t%C3%ADtulo%20(4).png" alt="Logo Compañía de Bomberos VMT 106">
+    </div>
 
     <script>
       // El resto del código JavaScript no ha cambiado y se mantiene igual.
@@ -649,9 +664,6 @@
         document.title = "Villa Maria del Triunfo 106 - Compañía de Bomberos";
         app.innerHTML = `
             <header>
-              <div class="logo-container">
-                <img src="https://raw.githubusercontent.com/alecarp11/datovehiculo106/12f1bb5f5bcef285e1aef26aec62044cfc877b90/Dise%C3%B1o%20sin%20t%C3%ADtulo%20(4).png" alt="Logo Compañía de Bomberos VMT 106">
-              </div>
               <h1>Villa Maria del Triunfo 106</h1>
               <h2>Compañía de Bomberos</h2>
               <p>Sistema de gestión de unidades y equipamiento</p>
