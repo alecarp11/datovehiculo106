@@ -37,15 +37,15 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        position: relative; /* Necesario para posicionar el logo de fondo */
+        position: relative;
       }
 
       .container {
         max-width: 900px;
         margin: 0 auto;
-        width: 100%; /* Asegura que el contenedor ocupe el ancho completo disponible */
-        z-index: 1; /* Asegura que el contenido esté por encima del logo de fondo */
-        position: relative; /* Para asegurar que el contenido esté por encima del logo central */
+        width: 100%;
+        z-index: 1;
+        position: relative;
       }
 
       /* --- Logo principal de fondo (super grande) --- */
@@ -54,20 +54,20 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 100%; /* Ocupa todo el ancho disponible */
-        height: 100%; /* Ocupa toda la altura disponible */
+        width: 100%;
+        height: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
-        opacity: 0.15; /* Más oscuro */
-        z-index: 0; /* Detrás de todo el contenido */
-        pointer-events: none; /* No interactuable con el ratón */
+        opacity: 0.15;
+        z-index: 0;
+        pointer-events: none;
       }
       .main-logo-container img {
-        width: 80vw; /* 80% del ancho del viewport */
+        width: 80vw;
         height: auto;
-        max-width: 800px; /* Limita el tamaño máximo para que no sea excesivo en pantallas muy grandes */
-        max-height: 80vh; /* Limita la altura máxima para que no sea excesiva */
+        max-width: 800px;
+        max-height: 80vh;
       }
 
       /* --- Encabezado --- */
@@ -80,7 +80,7 @@
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         position: relative;
         overflow: hidden;
-        width: 100%; /* Asegura que el header ocupe el ancho completo */
+        width: 100%;
       }
 
       h1 {
@@ -94,19 +94,18 @@
         font-size: 1.8rem;
         color: var(--color-azul-marino);
         margin-bottom: 20px;
-        /* Ajuste para el logo pequeño */
-        display: flex; /* Permite alinear elementos */
-        align-items: center; /* Centrar verticalmente */
-        justify-content: center; /* Centrar el bloque de texto y logo */
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       /* Logo pequeño al lado de Compañía de Bomberos */
       .header-logo-small {
-        width: 80px; /* Más grande */
+        width: 80px;
         height: auto;
-        margin-left: 25px; /* Más a la derecha */
-        margin-right: 10px; /* Espacio a su derecha */
-        vertical-align: middle; /* Alineación vertical con el texto */
+        margin-left: 25px;
+        margin-right: 10px;
+        vertical-align: middle;
       }
 
       /* --- Lista de Unidades --- */
@@ -129,7 +128,7 @@
         text-align: center;
         width: 100%;
         max-width: 280px;
-        border: 3px solid var(--color-azul-marino); /* Marco más grueso */
+        border: 3px solid var(--color-azul-marino);
       }
 
       .unit-card:hover {
@@ -193,7 +192,7 @@
         align-items: center;
         gap: 20px;
         transition: transform 0.3s ease;
-        border: 3px solid var(--color-azul-marino); /* Marco más grueso */
+        border: 3px solid var(--color-azul-marino);
       }
       
       .door:hover {
@@ -315,7 +314,7 @@
         max-width: 600px;
         text-align: left;
         margin-top: 40px;
-        border: 3px solid var(--color-azul-marino); /* Marco más grueso */
+        border: 3px solid var(--color-azul-marino);
       }
       .qr-page-container h2 {
         color: var(--color-azul-marino);
@@ -359,7 +358,6 @@
 
         h2 {
           font-size: 1.5rem;
-          /* Asegurar que el texto y el logo pequeño se centren como un bloque */
           justify-content: center;
         }
 
@@ -375,25 +373,26 @@
           margin-top: 15px;
         }
         .main-logo-container img {
-            width: 90vw; /* Más grande en móviles */
+          width: 90vw;
         }
         .header-logo-small {
-            width: 60px; /* Más grande en móviles */
-            margin-left: 15px; /* Ajuste para móviles */
+          width: 60px;
+          margin-left: 15px;
         }
       }
     </style>
   </head>
   <body>
     <div class="main-logo-container">
-      <img src="https://raw.githubusercontent.com/alecarp11/datovehiculo106/12f1bb5f5bcef285e1aef26aec62044cfc877b90/Dise%C3%B1o%20sin%20t%C3%ADtulo%20(4).png" alt="Logo Compañía de Bomberos VMT 106 - Grande">
+      <img
+        src="https://raw.githubusercontent.com/alecarp11/datovehiculo106/12f1bb5f5bcef285e1aef26aec62044cfc877b90/Dise%C3%B1o%20sin%20t%C3%ADtulo%20(4).png"
+        alt="Logo Compañía de Bomberos VMT 106 - Grande"
+      />
     </div>
 
     <div class="container" id="app"></div>
 
     <script>
-      // El resto del código JavaScript no ha cambiado y se mantiene igual.
-      // ... (código JavaScript completo aquí) ...
       const units = {
         maquina106: {
           name: "MAQUINA 106.01",
@@ -407,7 +406,7 @@
           },
           doors: [
             {
-              title: "Cabina ",
+              title: "Cabina",
               content: [
                 "Equipos de respiración autónoma: 7 unidades",
                 "Máscaras: 7 unidades",
@@ -420,41 +419,38 @@
               ],
             },
             {
-              title: "Puerta Enrrollable N°1 ",
+              title: "Puerta N°1",
               content: [
-                "Lágrimas acrílicas de rescate vehicular: 3 unidades",
-                "Estabilizadores laterales de rescate: 2 unidades",
-                "Estabilizadores HILFIT: 2 unidades",
-                "Cizalla HOLMATRO: 1 unidad",
-                "SECO: 1 unidad",
+                "Cadena: 1 unidad",
+                "Grilletes Grandes: 2 unidad",
+                "Grilletes Medianos: 2 unidad",
+                "Grilletes Chicos: 2 unidad",
               ],
             },
             {
-              title: "Puerta Enrollable Nº 2 ",
+              title: "Puerta Enrollable Nº 2",
               content: [
                 "Llave de embone: 2 unidades",
                 "Llave de hidrante: 1 unidad",
-                "Masa de goma: 2 unidades",
+                "Maso de goma: 1 unidad",
                 "Doble hembra de 1 1/2”: 2 unidades",
                 "Doble macho de 1 1/2”: 2 unidades",
                 "Doble hembra 2 1/2”: 2 unidades",
-                "Reductores de 2 1/2” a 1 1/2”: 4 unidades",
-                "Pitones tipo pistola de 1 1/2”: 2 unidades",
-                "Pitones tipo pistola de 2 1/2”: 1 unidad",
-                "Monitor Pitón: 1 unidad",
+                "Reductores de 2 1/2” a 1 1/2”: 2 unidades",
+                "Pitones tipo pistola de 2 1/2”: 2 unidades",
+                "Pitón Monitor : 1 unidad",
                 "Siamesa: 1 unidad",
                 "Bifurco de 2 1/2” a 1 1/2”: 1 unidad",
-                "Llave estilson 12”: 1 unidad",
                 "Llave estilson 24”: 1 unidad",
                 "Alicate: 1 unidad",
                 "Triamesa de 6 a 2 1/2”: 2 unidades",
-                "Canastilla absorbente: 1 unidad",
+                "Canastilla absorbente: 2 unidad",
                 "Doble macho 2 1/2”: 1 unidad",
                 "Cizalla 24”: 1 unidad",
               ],
             },
             {
-              title: "Puerta Enrollable Nº 3 ",
+              title: "Puerta Enrollable Nº 3",
               content: [
                 "Escobas cerdas de plástico: 2 unidades",
                 "Halligan: 1 unidad",
@@ -463,14 +459,14 @@
                 "Hacha de leñador: 1 unidad",
                 "Hacha bomberil: 1 unidad",
                 "Cizalla 14”: 4 unidades",
-                "Cilindros de aire SCOTT: 1 unidad",
-                "Pico: 3 unidades",
-                "Mantas ignifugas: 2 unidades",
-                "Cuñas de metal: 1 unidad",
+                "Cilindros de aire : 4 unidades",
+                "Pico: 1 unidad",
+                "Mantas ignifugas: 3 unidades",
+                "Cuñas de metal: 2 unidad",
               ],
             },
             {
-              title: "Puerta Enrollable Nº 4 ",
+              title: "Puerta Enrollable Nº 4",
               content: [
                 "Conos de seguridad: 5 unidades",
                 "Prensas de contención de fuga de gas (medianas): 2 unidades",
@@ -481,11 +477,14 @@
                 "Kit gas natural: 1 unidad",
                 "Pala de bronce: 1 unidad",
                 "Extintor de agua: 1 unidad",
-                "Prensas hidráulicas de gas: 2 unidades",
               ],
             },
             {
-              title: "Puerta Enrollable N°5 ",
+              title: "Puerta N°5",
+              content: ["Llave T Grande: 1 unidad", "Bichero de Madera: 1 unidad"],
+            },
+            {
+              title: "Puerta Enrollable N°6",
               content: [
                 "Maleta cuerdas 29 mts: 1 unidad",
                 "Maleta cuerdas 28 mts: 1 unidad",
@@ -523,27 +522,51 @@
               ],
             },
             {
-              title: "Puerta Enrollable N°6 ",
-              content: ["", "", ""],
+              title: "Puerta N°7",
+              content: [
+                "Bichero : 1 Unidad",
+                "Escalera 2 cuerpos- 24 pasos: 1 Unidad",
+                "Escalera 1 cuerpo con ganchos: 12 pasos: 1Unidad",
+                "Llave T: 1 Unidad",
+              ],
             },
             {
-              title: "Puerta Enrollable N°7 ",
-              content: ["", "", ""],
-            },
-            {
-              title: "Puerta Enrollable N°8 ",
-              content: ["", "", "", ""],
-            },
-            {
-              title: "Puerta Enrollable Nº 9",
+              title: "Puerta Enrollable N°8",
               content: [
                 "Grupo electrógeno marca honda 500: 1 unidad",
                 "Motosierra de 17”: 1 unidad",
                 "Mototrasadora: 1 unidad",
+                "Amoladora: 1 unidad",
               ],
             },
             {
-              title: "Cama (techo) ",
+              title: "Puerta Enrollable Nº 9",
+              content: [
+                "Lágrimas acrílicas de rescate vehicular: 3 unidades",
+                "Estabilizadores laterales de rescate: 2 unidades",
+                "Estabilizadores HILFIT: 2 unidades",
+                "Cizalla HOLMATRO: 1 unidad",
+                "SKED: 1 unidad",
+              ],
+            },
+            {
+              title: "Puerta Enrollable Nº 10",
+              content: [
+                "Bolsa de ferula azul: 1 unidad",
+                "Expanzor: 1 unidad",
+                "Cizalla pico de loro: 1 unidad",
+                "Expansor Cilindrico: 1 unidad",
+                "Soporte RAM: 1 unidad",
+                "Seguro Airbag: 1 unidad",
+                "Baterias: 3 Unidades",
+              ],
+            },
+            {
+              title: "Puerta N°11",
+              content: ["Paño de Abastecimiento 2 1/2: 1 unidad"],
+            },
+            {
+              title: "Cama (techo)",
               content: [
                 "Pitones de 1 1/2\" exterior 1 1/2”: 4 unidades",
                 "Bifurco de 2 1/2” a 1 1/2”: 1 unidad",
@@ -566,7 +589,7 @@
           doors: [
             {
               title: "Puerta Principal (General)",
-              content: ["", "", "", "", ""],
+              content: [],
             },
           ],
         },
@@ -583,7 +606,7 @@
           doors: [
             {
               title: "Puerta Principal - (General)",
-              content: ["", "", "", "", "", ""],
+              content: [],
             },
           ],
         },
@@ -598,46 +621,16 @@
             combustible: "Diésel",
           },
           doors: [
-            {
-              title: "Puerta 1 ",
-              content: ["", "", "", "", ""],
-            },
-            {
-              title: "Puerta 2",
-              content: ["", "", "", "", ""],
-            },
-            {
-              title: "Puerta 3",
-              content: ["", "", "", ""],
-            },
-            {
-              title: "Puerta 4 ",
-              content: ["", "", "", ""],
-            },
-            {
-              title: "Puerta 5",
-              content: ["", "", "", ""],
-            },
-            {
-              title: "Puerta 6 ",
-              content: ["", "", "", ""],
-            },
-            {
-              title: "Puerta 7 ",
-              content: ["", "", "", ""],
-            },
-            {
-              title: "Puerta 8 ",
-              content: ["", "", "", ""],
-            },
-            {
-              title: "Puerta 9 ",
-              content: ["", "", "", ""],
-            },
-            {
-              title: "Puerta 10 ",
-              content: ["", "", "", ""],
-            },
+            { title: "Puerta 1", content: [] },
+            { title: "Puerta 2", content: [] },
+            { title: "Puerta 3", content: [] },
+            { title: "Puerta 4", content: [] },
+            { title: "Puerta 5", content: [] },
+            { title: "Puerta 6", content: [] },
+            { title: "Puerta 7", content: [] },
+            { title: "Puerta 8", content: [] },
+            { title: "Puerta 9", content: [] },
+            { title: "Puerta 10", content: [] },
           ],
         },
         ambulancia106: {
@@ -653,7 +646,7 @@
           doors: [
             {
               title: "Puerta Principal - Equipamiento Médico",
-              content: ["", "", "", "", "", ""],
+              content: [],
             },
           ],
         },
