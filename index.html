@@ -897,7 +897,7 @@
         }
 
         document.title = `${door.title} - ${unit.name}`;
-        hideFloatingButton();
+        showFloatingButton(); // Ahora se muestra el botón flotante aquí también.
 
         app.innerHTML = `
           <button class="back-button" id="backBtn"><i class="fas fa-arrow-left"></i> Regresar</button>
@@ -910,10 +910,10 @@
             </ul>
             <div class="qr-page-download-buttons">
                 <button id="downloadDoorBtn">
-                    <i class="fas fa-download"></i> Descargar Puerta
+                    <i class="fas fa-file-excel"></i> Descargar Puerta
                 </button>
                 <button id="downloadUnitBtn">
-                    <i class="fas fa-download"></i> Descargar Unidad Completa
+                    <i class="fas fa-file-excel"></i> Descargar Unidad Completa
                 </button>
             </div>
           </div>
@@ -1015,8 +1015,13 @@
           const hash = window.location.hash.substring(1);
           const params = new URLSearchParams(hash);
           const unitId = params.get("unit");
+          const doorParam = params.get("door");
+
           if (unitId) {
               downloadAllData(unitId);
+          } else if (doorParam) {
+              const [unitIdFromDoor] = doorParam.split("-");
+              downloadAllData(unitIdFromDoor);
           } else {
               alert("Por favor, navega a una unidad para descargar su inventario.");
           }
