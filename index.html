@@ -787,7 +787,6 @@
           return;
         }
         document.title = `${unit.name} - Villa Maria del Triunfo 106`;
-        showFloatingButton(); // Mostrar el botón en esta página
 
         app.innerHTML = `
           <button class="back-button" id="backBtn"><i class="fas fa-arrow-left"></i> Volver</button>
@@ -902,7 +901,6 @@
         }
 
         document.title = `${door.title} - ${unit.name}`;
-        hideFloatingButton(); // Ocultar el botón en esta página
 
         app.innerHTML = `
           <div class="back-button-container">
@@ -1010,6 +1008,7 @@
         const unitParam = params.get("unit");
 
         if (doorParam) {
+          hideFloatingButton();
           const [unitId, doorIndex] = doorParam.split("-");
           if (unitId && doorIndex) {
             renderDoorPage(unitId, parseInt(doorIndex));
@@ -1017,8 +1016,10 @@
             renderUnitsList();
           }
         } else if (unitParam) {
+          showFloatingButton();
           renderUnitPage(unitParam);
         } else {
+          hideFloatingButton();
           renderUnitsList();
         }
       }
