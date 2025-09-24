@@ -157,7 +157,13 @@
       }
 
       /* --- Página de Unidad --- */
-      .back-button {
+      .back-button-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .back-button, .home-button {
         background-color: var(--color-azul-marino);
         color: var(--color-amarillo-claro);
         border: none;
@@ -165,7 +171,6 @@
         border-radius: 8px;
         font-weight: bold;
         cursor: pointer;
-        margin-bottom: 20px;
         display: inline-flex;
         align-items: center;
         gap: 8px;
@@ -173,7 +178,7 @@
         transition: background-color 0.3s ease, color 0.3s ease;
         user-select: none;
       }
-      .back-button:hover {
+      .back-button:hover, .home-button:hover {
         background-color: #145ea8;
         color: #fff200;
         box-shadow: 0 5px 10px rgba(20, 94, 168, 0.7);
@@ -354,28 +359,28 @@
           background-color: #b71c1c;
       }
       
-      /* --- Botón flotante para descarga completa --- */
+      /* --- Botón flotante para descarga completa (con nuevo estilo) --- */
       .floating-download-btn {
         position: fixed;
         bottom: 20px;
         right: 20px;
-        background-color: var(--color-azul-marino);
+        background-color: #3b82f6; /* Un azul más claro para el botón flotante */
         color: var(--color-blanco);
-        border: none;
+        border: 2px solid var(--color-blanco); /* Borde blanco para el efecto de la imagen */
         border-radius: 50%;
         width: 60px;
         height: 60px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.5rem;
+        font-size: 2rem; /* Tamaño de ícono más grande para que se vea mejor */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         cursor: pointer;
         z-index: 100;
         transition: transform 0.3s ease, background-color 0.3s ease;
       }
       .floating-download-btn:hover {
-        background-color: #145ea8;
+        background-color: #2563eb;
         transform: scale(1.1);
       }
       .floating-download-btn i {
@@ -431,7 +436,7 @@
     <div class="container" id="app"></div>
     
     <button id="floatingDownloadBtn" class="floating-download-btn" title="Descargar Inventario Completo" style="display:none;">
-      <i class="fas fa-download"></i>
+      <i class="fas fa-arrow-alt-circle-down"></i>
     </button>
 
     <script>
@@ -897,10 +902,13 @@
         }
 
         document.title = `${door.title} - ${unit.name}`;
-        showFloatingButton(); // Ahora se muestra el botón flotante aquí también.
+        showFloatingButton();
 
         app.innerHTML = `
-          <button class="back-button" id="backBtn"><i class="fas fa-arrow-left"></i> Regresar</button>
+          <div class="back-button-container">
+            <button class="back-button" id="backBtn"><i class="fas fa-arrow-left"></i> Regresar</button>
+            <button class="home-button" id="homeBtn"><i class="fas fa-home"></i> Inicio</button>
+          </div>
           <div class="qr-page-container">
             <h2>${door.title}</h2>
             <p><strong>Unidad:</strong> ${unit.name}</p>
@@ -919,8 +927,15 @@
           </div>
         `;
 
+        // Event listener para el botón "Regresar"
         document.getElementById("backBtn").addEventListener("click", () => {
-          window.history.back();
+          history.back();
+        });
+        
+        // Event listener para el botón "Inicio"
+        document.getElementById("homeBtn").addEventListener("click", () => {
+          renderUnitsList();
+          history.pushState({}, "", `#`);
         });
 
         document.getElementById("downloadDoorBtn").addEventListener("click", () => {
