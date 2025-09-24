@@ -394,16 +394,18 @@
           background-color: #b71c1c;
       }
       
-      /* --- Botones flotantes --- */
+      /* --- Estilos para los botones flotantes --- */
       .floating-btn-container {
         position: fixed;
         bottom: 20px;
         right: 20px;
+        z-index: 100;
         display: flex;
         flex-direction: column;
         gap: 10px;
-        align-items: flex-end;
+        align-items: flex-end; /* Alinea los botones a la derecha por defecto */
       }
+
       .floating-download-btn, .floating-download-all-btn {
         background-color: var(--color-rojo-bombero);
         color: var(--color-blanco);
@@ -413,18 +415,19 @@
         font-weight: bold;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         cursor: pointer;
-        z-index: 100;
-        transition: transform 0.3s ease, background-color 0.3s ease;
+        transition: transform 0.3s ease, background-color 0.3s ease, opacity 0.3s ease;
         display: none; /* Inicia oculto */
         font-size: 1rem;
-        white-space: nowrap; /* Evita que el texto se parta en varias líneas */
+        white-space: nowrap;
+        opacity: 1; /* Opacidad normal en PC */
       }
+      
       .floating-download-btn:hover, .floating-download-all-btn:hover {
         background-color: #b71c1c;
         transform: scale(1.05);
       }
 
-      /* --- MEDIA QUERIES PARA ADAPTABILIDAD --- */
+      /* --- MEDIA QUERIES PARA MÓVILES --- */
       @media (max-width: 767px) {
         .units-list {
           flex-direction: column;
@@ -455,6 +458,26 @@
         }
         .qr-page-download-buttons {
             flex-direction: column;
+        }
+        
+        /* Reorganización del contenedor y los botones para vista móvil */
+        .floating-btn-container {
+            bottom: 20px;
+            right: auto;
+            left: 20px; /* Ancla el contenedor a la izquierda */
+            width: calc(100% - 40px);
+            flex-direction: row;
+            justify-content: space-between; /* Separa los botones a los extremos */
+            align-items: flex-end;
+        }
+
+        .floating-download-btn, .floating-download-all-btn {
+          opacity: 0.85; /* Aplica la transparencia solo en móviles */
+          padding: 12px 20px; /* Reduce un poco el tamaño para mejor ajuste */
+        }
+        
+        #floatingDownloadAllBtn {
+            margin-right: 10px; /* Añade un pequeño espacio entre botones */
         }
       }
     </style>
