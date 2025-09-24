@@ -398,6 +398,7 @@
       .floating-btn-container {
         position: fixed;
         bottom: 20px;
+        left: 20px;
         right: 20px;
         z-index: 100;
         display: flex;
@@ -462,22 +463,24 @@
         
         /* Reorganización del contenedor y los botones para vista móvil */
         .floating-btn-container {
-            bottom: 20px;
-            right: auto;
-            left: 20px; /* Ancla el contenedor a la izquierda */
-            width: calc(100% - 40px);
             flex-direction: row;
             justify-content: space-between; /* Separa los botones a los extremos */
             align-items: flex-end;
         }
-
+        
         .floating-download-btn, .floating-download-all-btn {
           opacity: 0.85; /* Aplica la transparencia solo en móviles */
           padding: 12px 20px; /* Reduce un poco el tamaño para mejor ajuste */
         }
         
         #floatingDownloadAllBtn {
-            margin-right: 10px; /* Añade un pequeño espacio entre botones */
+            position: absolute;
+            left: 0;
+        }
+        
+        #floatingDownloadBtn {
+            position: absolute;
+            right: 0;
         }
       }
     </style>
@@ -875,7 +878,10 @@
         document.title = `${unit.name} - Villa Maria del Triunfo 106`;
 
         app.innerHTML = `
-          <button class="back-button" id="backBtn"><i class="fas fa-arrow-left"></i> Volver</button>
+          <div class="back-button-container">
+            <button class="back-button" id="backBtn"><i class="fas fa-arrow-left"></i> Volver</button>
+            <button class="home-button" id="homeBtn"><i class="fas fa-home"></i> Inicio</button>
+          </div>
           <header>
             <h1>${unit.name}</h1>
             <h2>${unit.type} <img src="https://raw.githubusercontent.com/alecarp11/datovehiculo106/12f1bb5f5bcef285e1aef26aec62044cfc877b90/Dise%C3%B1o%20sin%20t%C3%ADtulo%20(4).png" alt="Logo Compañía de Bomberos VMT 106 - Pequeño" class="header-logo-small"></h2>
@@ -928,6 +934,11 @@
 
         document.getElementById("backBtn").addEventListener("click", () => {
           history.back();
+        });
+
+        document.getElementById("homeBtn").addEventListener("click", () => {
+          renderUnitsList();
+          history.pushState({}, "", `#`);
         });
 
         document.querySelectorAll(".edit-btn").forEach((btn) => {
@@ -988,7 +999,7 @@
         }
 
         document.title = `${door.title} - ${unit.name}`;
-        showFloatingButtons();
+        hideFloatingButtons(); // Oculta los botones flotantes en la vista de QR
 
         app.innerHTML = `
           <div class="back-button-container">
