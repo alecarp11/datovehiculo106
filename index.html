@@ -319,6 +319,37 @@
         font-size: 1.1rem;
         margin-bottom: 0.5rem;
       }
+      .qr-page-download-buttons {
+          display: flex;
+          gap: 15px;
+          justify-content: center;
+          margin-top: 20px;
+      }
+      .qr-page-download-buttons button {
+          border: none;
+          padding: 10px 20px;
+          border-radius: 8px;
+          font-weight: bold;
+          cursor: pointer;
+          transition: transform 0.2s ease;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+      }
+      #downloadDoorBtn {
+          background-color: var(--color-azul-marino);
+          color: var(--color-amarillo-claro);
+      }
+      #downloadDoorBtn:hover {
+          background-color: #145ea8;
+      }
+      #downloadUnitBtn {
+          background-color: var(--color-rojo-bombero);
+          color: var(--color-blanco);
+      }
+      #downloadUnitBtn:hover {
+          background-color: #b71c1c;
+      }
       
       /* --- Botón flotante para descarga completa --- */
       .floating-download-btn {
@@ -379,6 +410,9 @@
         .header-logo-small {
           width: 60px;
           margin-left: 15px;
+        }
+        .qr-page-download-buttons {
+            flex-direction: column;
         }
       }
     </style>
@@ -860,7 +894,7 @@
         }
 
         document.title = `${door.title} - ${unit.name}`;
-        showFloatingButton();
+        hideFloatingButton();
 
         app.innerHTML = `
           <button class="back-button" id="backBtn"><i class="fas fa-arrow-left"></i> Regresar</button>
@@ -871,11 +905,32 @@
             <ul>
               ${door.content.map((item) => `<li>${item}</li>`).join("")}
             </ul>
+            <div class="qr-page-download-buttons">
+                <button id="downloadDoorBtn" data-unit-id="${unitId}" data-door-index="${doorIndex}">
+                    <i class="fas fa-download"></i> Descargar Puerta
+                </button>
+                <button id="downloadUnitBtn" data-unit-id="${unitId}">
+                    <i class="fas fa-download"></i> Descargar Unidad Completa
+                </button>
+            </div>
           </div>
         `;
 
         document.getElementById("backBtn").addEventListener("click", () => {
           window.history.back();
+        });
+
+        document.getElementById("downloadDoorBtn").addEventListener("click", (e) => {
+            const unitId = e.target.getAttribute("data-unit-id");
+            const doorIndex = parseInt(e.target.getAttribute("data-door-index"));
+            const unit = units[unitId];
+            const door = unit.doors[doorIndex];
+            downloadExcel(unit, door);
+        });
+
+        document.getElementById("downloadUnitBtn").addEventListener("click", (e) => {
+            const unitId = e.target.getAttribute("data-unit-id");
+            downloadAllData(unitId);
         });
       }
 
@@ -902,28 +957,12 @@
         XLSX.writeFile(wb, filename);
       }
       
-      function downloadAllData() {
-        // Obtenemos el ID de la unidad actual de la URL
-        const hash = window.location.hash.substring(1);
-        const params = new URLSearchParams(hash);
-        const unitId = params.get("unit");
-        
-        if (!unitId) {
-            alert("No se puede descargar el inventario completo. Vuelva a la página de la unidad.");
-            return;
-        }
-
+      function downloadAllData(unitId) {
         const currentUnit = units[unitId];
         if (!currentUnit) {
             alert("No se encontró la unidad para descargar.");
             return;
         }
-
-        // Animación de descarga en el botón
-        const downloadIcon = floatingDownloadBtn.querySelector('i');
-        downloadIcon.classList.remove('fa-file-excel');
-        downloadIcon.classList.add('fa-spinner', 'fa-spin');
-        floatingDownloadBtn.classList.add('downloading');
 
         const wb = XLSX.utils.book_new();
         const unitData = [
@@ -951,19 +990,13 @@
 
         const filename = `${currentUnit.name.replace(/\s/g, "_")}.xlsx`;
         XLSX.writeFile(wb, filename);
-
-        // Restaurar el botón después de la descarga (con un pequeño retraso)
-        setTimeout(() => {
-            downloadIcon.classList.remove('fa-spinner', 'fa-spin');
-            downloadIcon.classList.add('fa-file-excel');
-            floatingDownloadBtn.classList.remove('downloading');
-        }, 1000);
       }
 
       function handleUrlFragment() {
         const hash = window.location.hash.substring(1);
         const params = new URLSearchParams(hash);
         const doorParam = params.get("door");
+        const unitParam = params.get("unit");
 
         if (doorParam) {
           const [unitId, doorIndex] = doorParam.split("-");
@@ -972,18 +1005,24 @@
           } else {
             renderUnitsList();
           }
+        } else if (unitParam) {
+          renderUnitPage(unitParam);
         } else {
-          const unitId = params.get("unit");
-          if (unitId) {
-            renderUnitPage(unitId);
-          } else {
-            renderUnitsList();
-          }
+          renderUnitsList();
         }
       }
 
       window.addEventListener("hashchange", handleUrlFragment);
-      floatingDownloadBtn.addEventListener("click", downloadAllData);
+      floatingDownloadBtn.addEventListener("click", () => {
+          const hash = window.location.hash.substring(1);
+          const params = new URLSearchParams(hash);
+          const unitId = params.get("unit");
+          if (unitId) {
+              downloadAllData(unitId);
+          } else {
+              alert("Por favor, navega a una unidad para descargar su inventario.");
+          }
+      });
 
       function init() {
         loadData();
