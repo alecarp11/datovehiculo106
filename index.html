@@ -906,10 +906,10 @@
               ${door.content.map((item) => `<li>${item}</li>`).join("")}
             </ul>
             <div class="qr-page-download-buttons">
-                <button id="downloadDoorBtn" data-unit-id="${unitId}" data-door-index="${doorIndex}">
+                <button id="downloadDoorBtn">
                     <i class="fas fa-download"></i> Descargar Puerta
                 </button>
-                <button id="downloadUnitBtn" data-unit-id="${unitId}">
+                <button id="downloadUnitBtn">
                     <i class="fas fa-download"></i> Descargar Unidad Completa
                 </button>
             </div>
@@ -920,16 +920,11 @@
           window.history.back();
         });
 
-        document.getElementById("downloadDoorBtn").addEventListener("click", (e) => {
-            const unitId = e.target.getAttribute("data-unit-id");
-            const doorIndex = parseInt(e.target.getAttribute("data-door-index"));
-            const unit = units[unitId];
-            const door = unit.doors[doorIndex];
+        document.getElementById("downloadDoorBtn").addEventListener("click", () => {
             downloadExcel(unit, door);
         });
 
-        document.getElementById("downloadUnitBtn").addEventListener("click", (e) => {
-            const unitId = e.target.getAttribute("data-unit-id");
+        document.getElementById("downloadUnitBtn").addEventListener("click", () => {
             downloadAllData(unitId);
         });
       }
