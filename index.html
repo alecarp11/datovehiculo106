@@ -919,9 +919,9 @@
           </div>
         `;
 
+        // Se corrigió el listener para usar window.history.back()
         document.getElementById("backBtn").addEventListener("click", () => {
-          renderUnitPage(unitId);
-          history.pushState({ unitId }, "", `#unit=${unitId}`);
+          window.history.back();
         });
 
         document.getElementById("downloadDoorBtn").addEventListener("click", () => {
