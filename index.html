@@ -787,7 +787,7 @@
           return;
         }
         document.title = `${unit.name} - Villa Maria del Triunfo 106`;
-        showFloatingButton();
+        showFloatingButton(); // Mostrar el botón en esta página
 
         app.innerHTML = `
           <button class="back-button" id="backBtn"><i class="fas fa-arrow-left"></i> Volver</button>
@@ -902,7 +902,7 @@
         }
 
         document.title = `${door.title} - ${unit.name}`;
-        showFloatingButton();
+        hideFloatingButton(); // Ocultar el botón en esta página
 
         app.innerHTML = `
           <div class="back-button-container">
@@ -927,12 +927,10 @@
           </div>
         `;
 
-        // Event listener para el botón "Regresar"
         document.getElementById("backBtn").addEventListener("click", () => {
           history.back();
         });
         
-        // Event listener para el botón "Inicio"
         document.getElementById("homeBtn").addEventListener("click", () => {
           renderUnitsList();
           history.pushState({}, "", `#`);
