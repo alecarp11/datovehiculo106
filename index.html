@@ -917,7 +917,8 @@
         `;
 
         document.getElementById("backBtn").addEventListener("click", () => {
-          window.history.back();
+          renderUnitPage(unitId);
+          history.pushState({ unitId }, "", `#unit=${unitId}`);
         });
 
         document.getElementById("downloadDoorBtn").addEventListener("click", () => {
