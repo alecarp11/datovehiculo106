@@ -462,6 +462,10 @@
         }
         
         /* Reorganización del contenedor y los botones para vista móvil */
+        body {
+            padding-bottom: 100px; /* Agrega espacio en la parte inferior para que los botones no tapen el contenido */
+        }
+        
         .floating-btn-container {
             flex-direction: row;
             justify-content: space-between; /* Separa los botones a los extremos */
@@ -476,11 +480,13 @@
         #floatingDownloadAllBtn {
             position: absolute;
             left: 0;
+            font-size: 0.85rem;
         }
         
         #floatingDownloadBtn {
             position: absolute;
             right: 0;
+            font-size: 0.85rem;
         }
       }
     </style>
