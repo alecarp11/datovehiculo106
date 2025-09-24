@@ -394,36 +394,34 @@
           background-color: #b71c1c;
       }
       
-      /* --- Botón flotante para descarga completa (con nuevo estilo) --- */
-      .floating-download-btn {
+      /* --- Botones flotantes --- */
+      .floating-btn-container {
         position: fixed;
         bottom: 20px;
         right: 20px;
-        background-color: #3b82f6; /* Un azul más claro para el botón flotante */
-        color: var(--color-blanco);
-        border: 2px solid var(--color-blanco); /* Borde blanco para el efecto de la imagen */
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
         display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2rem; /* Tamaño de ícono más grande para que se vea mejor */
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-end;
+      }
+      .floating-download-btn, .floating-download-all-btn {
+        background-color: var(--color-rojo-bombero);
+        color: var(--color-blanco);
+        border: none;
+        padding: 15px 25px;
+        border-radius: 50px;
+        font-weight: bold;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         cursor: pointer;
         z-index: 100;
         transition: transform 0.3s ease, background-color 0.3s ease;
-        display: none; /* Por defecto está oculto, el JS lo mostrará */
+        display: none; /* Inicia oculto */
+        font-size: 1rem;
+        white-space: nowrap; /* Evita que el texto se parta en varias líneas */
       }
-      .floating-download-btn:hover {
-        background-color: #2563eb;
-        transform: scale(1.1);
-      }
-      .floating-download-btn i {
-          transition: transform 0.5s ease-in-out;
-      }
-      .floating-download-btn.downloading i {
-          transform: rotate(360deg);
+      .floating-download-btn:hover, .floating-download-all-btn:hover {
+        background-color: #b71c1c;
+        transform: scale(1.05);
       }
 
       /* --- MEDIA QUERIES PARA ADAPTABILIDAD --- */
@@ -476,9 +474,14 @@
 
     <div class="container" id="app"></div>
     
-    <button id="floatingDownloadBtn" class="floating-download-btn" title="Descargar Inventario Completo">
-      <i class="fas fa-arrow-alt-circle-down"></i>
-    </button>
+    <div class="floating-btn-container">
+        <button id="floatingDownloadAllBtn" class="floating-download-all-btn" title="Descargar todas las unidades en un solo archivo">
+            Descargar Todas Unidades
+        </button>
+        <button id="floatingDownloadBtn" class="floating-download-btn" title="Descargar Inventario Completo">
+            Descarga Unidad
+        </button>
+    </div>
 
     <script>
       const units = {
@@ -750,6 +753,7 @@
       };
       
       const floatingDownloadBtn = document.getElementById('floatingDownloadBtn');
+      const floatingDownloadAllBtn = document.getElementById('floatingDownloadAllBtn');
       const welcomeOverlay = document.querySelector('.welcome-overlay');
 
       function saveData() {
@@ -771,12 +775,19 @@
         )}&size=120`;
       }
 
-      function showFloatingButton() {
-        floatingDownloadBtn.style.display = 'flex';
+      function showFloatingButtons(allUnitsPage = false) {
+        if (allUnitsPage) {
+          floatingDownloadAllBtn.style.display = 'block';
+          floatingDownloadBtn.style.display = 'none';
+        } else {
+          floatingDownloadBtn.style.display = 'block';
+          floatingDownloadAllBtn.style.display = 'none';
+        }
       }
       
-      function hideFloatingButton() {
+      function hideFloatingButtons() {
         floatingDownloadBtn.style.display = 'none';
+        floatingDownloadAllBtn.style.display = 'none';
       }
 
       function showWelcomeMessage(duration = 1500) {
@@ -791,7 +802,7 @@
       
       function renderUnitsList() {
         document.title = "Villa Maria del Triunfo 106 - Compañía de Bomberos";
-        hideFloatingButton();
+        showFloatingButtons(true);
         app.innerHTML = `
             <header>
               <h1>Villa Maria del Triunfo 106</h1>
@@ -942,7 +953,7 @@
             downloadExcel(unit, door);
           });
         });
-        showFloatingButton();
+        showFloatingButtons();
       }
 
       function renderDoorPage(unitId, doorIndex) {
@@ -954,7 +965,7 @@
         }
 
         document.title = `${door.title} - ${unit.name}`;
-        hideFloatingButton();
+        showFloatingButtons();
 
         app.innerHTML = `
           <div class="back-button-container">
@@ -972,9 +983,6 @@
                 <button id="downloadDoorBtn">
                     <i class="fas fa-file-excel"></i> Descargar Puerta
                 </button>
-                <button id="downloadUnitBtn">
-                    <i class="fas fa-file-excel"></i> Descargar Unidad Completa
-                </button>
             </div>
           </div>
         `;
@@ -990,10 +998,6 @@
 
         document.getElementById("downloadDoorBtn").addEventListener("click", () => {
             downloadExcel(unit, door);
-        });
-
-        document.getElementById("downloadUnitBtn").addEventListener("click", () => {
-            downloadAllData(unitId);
         });
       }
 
@@ -1013,10 +1017,7 @@
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Equipamiento");
 
-        const filename = `${unit.name.replace(/\s/g, "_")}_${door.title.replace(
-          /\s/g,
-          "_"
-        )}.xlsx`;
+        const filename = `${unit.name.replace(/\s/g, "_")}_${door.title.replace(/\s/g, "_")}.xlsx`;
         XLSX.writeFile(wb, filename);
       }
       
@@ -1054,6 +1055,39 @@
         const filename = `${currentUnit.name.replace(/\s/g, "_")}.xlsx`;
         XLSX.writeFile(wb, filename);
       }
+      
+      function downloadAllUnitsData() {
+        const wb = XLSX.utils.book_new();
+
+        Object.keys(units).forEach(unitId => {
+            const currentUnit = units[unitId];
+            const unitData = [
+                ["Unidad", currentUnit.name],
+                ["Tipo", currentUnit.type],
+                ["Placa", currentUnit.specs.placa],
+                ["CBP", currentUnit.specs.cbp],
+                ["Modelo", currentUnit.specs.modelo],
+                ["Año", currentUnit.specs.ano],
+                ["Combustible", currentUnit.specs.combustible],
+                [],
+            ];
+
+            currentUnit.doors.forEach((door) => {
+                unitData.push(
+                    [`Puerta: ${door.title}`],
+                    ["Contenido"],
+                    ...door.content.map((item) => [item]),
+                    []
+                );
+            });
+
+            const ws = XLSX.utils.aoa_to_sheet(unitData);
+            const sheetName = currentUnit.name.replace(/\s/g, "_").substring(0, 31);
+            XLSX.utils.book_append_sheet(wb, ws, sheetName);
+        });
+
+        XLSX.writeFile(wb, "Inventario_Completo_Unidades_106.xlsx");
+      }
 
       function handleUrlFragment() {
         const hash = window.location.hash.substring(1);
@@ -1077,15 +1111,25 @@
       }
 
       window.addEventListener("hashchange", handleUrlFragment);
+
       floatingDownloadBtn.addEventListener("click", () => {
           const hash = window.location.hash.substring(1);
           const params = new URLSearchParams(hash);
           const unitId = params.get("unit");
+          const doorId = params.get("door");
+
           if (unitId) {
-              downloadAllData(unitId);
+            downloadAllData(unitId);
+          } else if (doorId) {
+            const [unitIdFromDoor] = doorId.split("-");
+            downloadAllData(unitIdFromDoor);
           } else {
-              alert("Por favor, navega a una unidad para descargar su inventario completo.");
+              alert("Por favor, navega a una unidad o puerta para descargar su inventario completo.");
           }
+      });
+      
+      floatingDownloadAllBtn.addEventListener("click", () => {
+          downloadAllUnitsData();
       });
 
       function init() {
