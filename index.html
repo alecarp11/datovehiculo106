@@ -51,6 +51,41 @@
         position: relative;
       }
 
+      /* --- Capa de bienvenida --- */
+      .welcome-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--color-azul-marino);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+        transition: opacity 0.5s ease-in-out;
+        opacity: 1;
+      }
+      .welcome-overlay.fade-out {
+        opacity: 0;
+      }
+      .welcome-overlay.hidden {
+        display: none;
+      }
+      .welcome-logo {
+        width: 150px;
+        height: auto;
+        margin-bottom: 20px;
+      }
+      .welcome-text {
+        color: var(--color-blanco);
+        font-size: 1.8rem;
+        text-align: center;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      }
+
       /* --- Logo principal de fondo (super grande) --- */
       .main-logo-container {
         position: fixed;
@@ -378,6 +413,7 @@
         cursor: pointer;
         z-index: 100;
         transition: transform 0.3s ease, background-color 0.3s ease;
+        display: none; /* Por defecto está oculto, el JS lo mostrará */
       }
       .floating-download-btn:hover {
         background-color: #2563eb;
@@ -426,6 +462,11 @@
     </style>
   </head>
   <body>
+    <div class="welcome-overlay">
+        <img src="https://raw.githubusercontent.com/alecarp11/datovehiculo106/12f1bb5f5bcef285e1aef26aec62044cfc877b90/Dise%C3%B1o%20sin%20t%C3%ADtulo%20(4).png" alt="Logo Compañía de Bomberos VMT 106" class="welcome-logo">
+        <p class="welcome-text">¡Bienvenido a la 106!</p>
+    </div>
+
     <div class="main-logo-container">
       <img
         src="https://raw.githubusercontent.com/alecarp11/datovehiculo106/12f1bb5f5bcef285e1aef26aec62044cfc877b90/Dise%C3%B1o%20sin%20t%C3%ADtulo%20(4).png"
@@ -435,7 +476,7 @@
 
     <div class="container" id="app"></div>
     
-    <button id="floatingDownloadBtn" class="floating-download-btn" title="Descargar Inventario Completo" style="display:none;">
+    <button id="floatingDownloadBtn" class="floating-download-btn" title="Descargar Inventario Completo">
       <i class="fas fa-arrow-alt-circle-down"></i>
     </button>
 
@@ -709,6 +750,7 @@
       };
       
       const floatingDownloadBtn = document.getElementById('floatingDownloadBtn');
+      const welcomeOverlay = document.querySelector('.welcome-overlay');
 
       function saveData() {
         localStorage.setItem("unitsData", JSON.stringify(units));
@@ -737,6 +779,16 @@
         floatingDownloadBtn.style.display = 'none';
       }
 
+      function showWelcomeMessage(duration = 1500) {
+          welcomeOverlay.classList.remove('hidden', 'fade-out');
+          setTimeout(() => {
+              welcomeOverlay.classList.add('fade-out');
+              setTimeout(() => {
+                  welcomeOverlay.classList.add('hidden');
+              }, 500);
+          }, duration);
+      }
+      
       function renderUnitsList() {
         document.title = "Villa Maria del Triunfo 106 - Compañía de Bomberos";
         hideFloatingButton();
@@ -841,7 +893,7 @@
         `;
 
         document.getElementById("backBtn").addEventListener("click", () => {
-          window.history.back();
+          history.back();
         });
 
         document.querySelectorAll(".edit-btn").forEach((btn) => {
@@ -890,6 +942,7 @@
             downloadExcel(unit, door);
           });
         });
+        showFloatingButton();
       }
 
       function renderDoorPage(unitId, doorIndex) {
@@ -901,6 +954,7 @@
         }
 
         document.title = `${door.title} - ${unit.name}`;
+        hideFloatingButton();
 
         app.innerHTML = `
           <div class="back-button-container">
@@ -1008,7 +1062,7 @@
         const unitParam = params.get("unit");
 
         if (doorParam) {
-          hideFloatingButton();
+          showWelcomeMessage(1500); // Muestra la bienvenida por 1.5s
           const [unitId, doorIndex] = doorParam.split("-");
           if (unitId && doorIndex) {
             renderDoorPage(unitId, parseInt(doorIndex));
@@ -1016,10 +1070,8 @@
             renderUnitsList();
           }
         } else if (unitParam) {
-          showFloatingButton();
           renderUnitPage(unitParam);
         } else {
-          hideFloatingButton();
           renderUnitsList();
         }
       }
@@ -1029,19 +1081,18 @@
           const hash = window.location.hash.substring(1);
           const params = new URLSearchParams(hash);
           const unitId = params.get("unit");
-          const doorParam = params.get("door");
-
           if (unitId) {
               downloadAllData(unitId);
-          } else if (doorParam) {
-              const [unitIdFromDoor] = doorParam.split("-");
-              downloadAllData(unitIdFromDoor);
           } else {
-              alert("Por favor, navega a una unidad para descargar su inventario.");
+              alert("Por favor, navega a una unidad para descargar su inventario completo.");
           }
       });
 
       function init() {
+        if (window.location.hash === '') {
+            showWelcomeMessage(2500); // Muestra la bienvenida inicial por 2.5s
+        }
+
         loadData();
         handleUrlFragment();
       }
