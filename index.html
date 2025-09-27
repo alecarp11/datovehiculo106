@@ -331,6 +331,7 @@
         border-radius: 15px;
         margin-top: 30px;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        width: 100%;
       }
 
       /* --- Estilos para la vista de QR --- */
@@ -508,14 +509,15 @@
     
     <div class="floating-btn-container">
         <button id="floatingDownloadAllBtn" class="floating-download-all-btn" title="Descargar todas las unidades en un solo archivo">
-            Descargar Todas Unidades
+            <i class="fas fa-file-excel"></i> Descargar Inventario
         </button>
-        <button id="floatingDownloadBtn" class="floating-download-btn" title="Descargar Inventario Completo">
-            Descarga Unidad
+        <button id="floatingDownloadBtn" class="floating-download-btn" title="Descargar inventario de la unidad actual">
+            <i class="fas fa-file-excel"></i> Descarga Unidad
         </button>
     </div>
 
     <script>
+      // --- DEFINICIÓN DE DATOS ---
       const units = {
         maquina106: {
           name: "MAQUINA 106.01",
@@ -534,11 +536,12 @@
                 "Equipos de respiración autónoma: 7 unidades",
                 "Máscaras: 7 unidades",
                 "Tabla rígida: 1 unidad",
-                "MILWAUKE + 4 baterías: 1 unidad",
+                "MILWAUKE + 2 baterías: 1 unidad",
                 "Caja corta anillo, Dremel: 1 unidad",
                 "Sierra caladora (BOSH) 5.sierras: 1 unidad",
                 "Rotomartillo (BOSH) 2 puntas: 1 unidad",
                 "Maletín kit fuga de gas: 1 unidad",
+                "Camilla rigida Anaranjada con Spaider: 1 unidad",
               ],
             },
             {
@@ -712,7 +715,7 @@
           doors: [
             {
               title: "Puerta Principal (General)",
-              content: [],
+              content: ["Mangueras y accesorios de abastecimiento: Ver lista adjunta", "Kit de herramientas básicas: 1 unidad"],
             },
           ],
         },
@@ -729,7 +732,7 @@
           doors: [
             {
               title: "Puerta Principal - (General)",
-              content: [],
+              content: ["Equipo de primeros auxilios avanzado: 1 maletín", "Cuerdas de rescate ligeras: 2 unidades", "Chalecos reflectivos: 5 unidades"],
             },
           ],
         },
@@ -744,9 +747,9 @@
             combustible: "Diésel",
           },
           doors: [
-            { title: "Puerta 1", content: [] },
-            { title: "Puerta 2", content: [] },
-            { title: "Puerta 3", content: [] },
+            { title: "Puerta 1", content: ["Herramientas hidráulicas pesadas: 1 set"] },
+            { title: "Puerta 2", content: ["Material de apuntalamiento: Vigas y tacos"] },
+            { title: "Puerta 3", content: ["Equipo de iluminación portátil: 2 unidades"] },
             { title: "Puerta 4", content: [] },
             { title: "Puerta 5", content: [] },
             { title: "Puerta 6", content: [] },
@@ -769,7 +772,7 @@
           doors: [
             {
               title: "Puerta Principal - Equipamiento Médico",
-              content: [],
+              content: ["Monitor desfibrilador: 1 unidad", "Kit de vía aérea: 1 unidad", "Medicamentos de emergencia: Ver inventario farmacéutico"],
             },
           ],
         },
@@ -787,7 +790,9 @@
       const floatingDownloadBtn = document.getElementById('floatingDownloadBtn');
       const floatingDownloadAllBtn = document.getElementById('floatingDownloadAllBtn');
       const welcomeOverlay = document.querySelector('.welcome-overlay');
+      let currentUnitId = null; // Variable para rastrear la unidad actual
 
+      // --- FUNCIONES DE ALMACENAMIENTO (localStorage) ---
       function saveData() {
         localStorage.setItem("unitsData", JSON.stringify(units));
       }
@@ -795,13 +800,25 @@
       function loadData() {
         const storedData = localStorage.getItem("unitsData");
         if (storedData) {
-          Object.assign(units, JSON.parse(storedData));
+          // Fusionar los datos almacenados con la estructura original
+          const loadedUnits = JSON.parse(storedData);
+          for (const unitId in loadedUnits) {
+            if (units[unitId]) {
+              // Asegurar que solo se actualicen los 'doors' y se mantengan los 'specs' originales si no están en el localStorage
+              units[unitId].doors = loadedUnits[unitId].doors || units[unitId].doors;
+              // Opcional: actualizar specs si se guardaron
+              units[unitId].specs = loadedUnits[unitId].specs || units[unitId].specs;
+            }
+          }
         }
       }
 
+      // --- FUNCIONES DE UTILIDAD ---
       function generateQR(unitId, doorIndex) {
+        // Enlaces a la vista de QR (si existiera una vista dedicada)
         const baseUrl = window.location.href.split("#")[0];
         const qrContent = `${baseUrl}#door=${unitId}-${doorIndex}`;
+        // Uso de quickchart.io para generar el QR. Se recomienda usar una biblioteca local como QRCode.js para producción.
         return `https://quickchart.io/qr?text=${encodeURIComponent(
           qrContent
         )}&size=120`;
@@ -828,12 +845,130 @@
               welcomeOverlay.classList.add('fade-out');
               setTimeout(() => {
                   welcomeOverlay.classList.add('hidden');
-              }, 500);
+              }, 500); // Duración de la transición
           }, duration);
       }
       
+      // --- FUNCIONES DE DESCARGA (EXCEL) ---
+
+      function downloadUnitDoor(unitId, doorIndex) {
+          const unit = units[unitId];
+          const door = unit.doors[doorIndex];
+          
+          if (!door) {
+              alert("Puerta o inventario no encontrado.");
+              return;
+          }
+
+          // Preparar datos para la hoja de cálculo
+          const data = [
+              ["UNIDAD", unit.name],
+              ["TIPO", unit.type],
+              ["PUERTA/COMPARTIMENTO", door.title],
+              [], // Separador
+              ["N°", "DESCRIPCIÓN DEL ARTÍCULO"],
+          ];
+
+          door.content.forEach((item, index) => {
+              // Separar el nombre del artículo de la cantidad (ej: "item: X unidades" -> ["item", "X unidades"])
+              const parts = item.split(':');
+              data.push([
+                  index + 1,
+                  parts[0].trim(),
+                  parts[1] ? parts[1].trim() : ""
+              ]);
+          });
+          
+          const ws = XLSX.utils.aoa_to_sheet(data);
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, door.title.substring(0, 31)); // Limitar nombre de hoja a 31 caracteres
+          
+          const filename = `${unit.name.replace(/\s/g, '_')}_${door.title.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '')}_Inventario.xlsx`;
+          XLSX.writeFile(wb, filename);
+      }
+
+      function downloadUnitInventory(unitId) {
+          const unit = units[unitId];
+          if (!unit) {
+              alert("Unidad no encontrada.");
+              return;
+          }
+
+          const wb = XLSX.utils.book_new();
+
+          unit.doors.forEach(door => {
+              const data = [
+                  ["UNIDAD", unit.name],
+                  ["TIPO", unit.type],
+                  ["PUERTA/COMPARTIMENTO", door.title],
+                  [], // Separador
+                  ["N°", "DESCRIPCIÓN DEL ARTÍCULO"],
+              ];
+
+              door.content.forEach((item, index) => {
+                  const parts = item.split(':');
+                  data.push([
+                      index + 1,
+                      parts[0].trim(),
+                      parts[1] ? parts[1].trim() : ""
+                  ]);
+              });
+
+              const ws = XLSX.utils.aoa_to_sheet(data);
+              XLSX.utils.book_append_sheet(wb, ws, door.title.substring(0, 31));
+          });
+          
+          const filename = `${unit.name.replace(/\s/g, '_')}_Inventario_Completo.xlsx`;
+          XLSX.writeFile(wb, filename);
+      }
+      
+      function downloadAllUnitsInventory() {
+          const wb = XLSX.utils.book_new();
+          let sheetNumber = 1;
+
+          for (const unitId in units) {
+              const unit = units[unitId];
+              unit.doors.forEach(door => {
+                  const data = [
+                      ["UNIDAD", unit.name],
+                      ["TIPO", unit.type],
+                      ["PLACA", unit.specs.placa],
+                      ["CBP", unit.specs.cbp],
+                      ["MODELO", unit.specs.modelo],
+                      ["AÑO", unit.specs.ano],
+                      ["COMBUSTIBLE", unit.specs.combustible],
+                      [],
+                      ["PUERTA/COMPARTIMENTO", door.title],
+                      [], // Separador
+                      ["N°", "ARTÍCULO", "CANTIDAD/ESPECIFICACIÓN"],
+                  ];
+
+                  door.content.forEach((item, index) => {
+                      // Intento de separar el artículo de la cantidad
+                      const match = item.match(/^(.*?):\s*(.*)$/);
+                      if (match) {
+                          data.push([index + 1, match[1].trim(), match[2].trim()]);
+                      } else {
+                          data.push([index + 1, item.trim(), ""]);
+                      }
+                  });
+
+                  // Crear nombre de hoja corto y único
+                  const sheetName = `${sheetNumber}. ${unit.name.replace(' ', '-').substring(0, 10)} - ${door.title.substring(0, 10)}`;
+                  const ws = XLSX.utils.aoa_to_sheet(data);
+                  XLSX.utils.book_append_sheet(wb, ws, sheetName.substring(0, 31));
+                  sheetNumber++;
+              });
+          }
+          
+          const filename = `VMT106_Inventario_Total.xlsx`;
+          XLSX.writeFile(wb, filename);
+      }
+
+      // --- FUNCIONES DE RENDERING ---
       function renderUnitsList() {
         document.title = "Villa Maria del Triunfo 106 - Compañía de Bomberos";
+        currentUnitId = null;
         showFloatingButtons(true);
         app.innerHTML = `
             <header>
@@ -849,11 +984,11 @@
                   <div class="unit-title">${unit.name}</div>
                   <div class="unit-type">${unit.type}</div>
                   <div class="unit-specs">
-                    <strong>Placa:</strong> ${unit.specs.placa}<br>
-                    <strong>CBP:</strong> ${unit.specs.cbp}<br>
-                    <strong>Modelo:</strong> ${unit.specs.modelo}<br>
-                    <strong>Año:</strong> ${unit.specs.ano}<br>
-                    <strong>Combustible:</strong> ${unit.specs.combustible}
+                    <strong>Placa:</strong> ${unit.specs.placa || 'N/A'}<br>
+                    <strong>CBP:</strong> ${unit.specs.cbp || 'N/A'}<br>
+                    <strong>Modelo:</strong> ${unit.specs.modelo || 'N/A'}<br>
+                    <strong>Año:</strong> ${unit.specs.ano || 'N/A'}<br>
+                    <strong>Combustible:</strong> ${unit.specs.combustible || 'N/A'}
                   </div>
                 </div>
               `
@@ -862,7 +997,7 @@
             </div>
             <div class="footer">
               <p>Villa Maria del Triunfo 106 - Compañía de Bomberos Voluntarios</p>
-              <p>Sistema de Gestión de Equipos © 2023</p>
+              <p>Sistema de Gestión de Inventario - Área de Operaciones © 2025</p>
             </div>
           `;
 
@@ -873,6 +1008,9 @@
             history.pushState({ unitId }, "", `#unit=${unitId}`);
           });
         });
+        
+        // Asignar el evento para descargar todas las unidades
+        floatingDownloadAllBtn.onclick = downloadAllUnitsInventory;
       }
 
       function renderUnitPage(unitId) {
@@ -881,7 +1019,10 @@
           renderUnitsList();
           return;
         }
+        
+        currentUnitId = unitId; // Establecer la unidad actual
         document.title = `${unit.name} - Villa Maria del Triunfo 106`;
+        showFloatingButtons(false);
 
         app.innerHTML = `
           <div class="back-button-container">
@@ -892,11 +1033,11 @@
             <h1>${unit.name}</h1>
             <h2>${unit.type} <img src="https://raw.githubusercontent.com/alecarp11/datovehiculo106/12f1bb5f5bcef285e1aef26aec62044cfc877b90/Dise%C3%B1o%20sin%20t%C3%ADtulo%20(4).png" alt="Logo Compañía de Bomberos VMT 106 - Pequeño" class="header-logo-small"></h2>
             <div class="unit-specs" style="text-align:center;">
-              <strong>Placa:</strong> ${unit.specs.placa} |
-              <strong>CBP:</strong> ${unit.specs.cbp} |
-              <strong>Modelo:</strong> ${unit.specs.modelo} |
-              <strong>Año:</strong> ${unit.specs.ano} |
-              <strong>Combustible:</strong> ${unit.specs.combustible}
+              <strong>Placa:</strong> ${unit.specs.placa || 'N/A'} |
+              <strong>CBP:</strong> ${unit.specs.cbp || 'N/A'} |
+              <strong>Modelo:</strong> ${unit.specs.modelo || 'N/A'} |
+              <strong>Año:</strong> ${unit.specs.ano || 'N/A'} |
+              <strong>Combustible:</strong> ${unit.specs.combustible || 'N/A'}
             </div>
           </header>
           <div class="doors-list">
@@ -934,7 +1075,7 @@
           </div>
           <div class="footer">
             <p>Villa Maria del Triunfo 106 - Compañía de Bomberos Voluntarios</p>
-            <p>Sistema de Gestión de Inventario- Area de Operaciones © 2025</p>
+            <p>Sistema de Gestión de Inventario - Área de Operaciones © 2025</p>
           </div>
         `;
 
@@ -946,6 +1087,8 @@
           renderUnitsList();
           history.pushState({}, "", `#`);
         });
+        
+        floatingDownloadBtn.onclick = () => downloadUnitInventory(currentUnitId);
 
         document.querySelectorAll(".edit-btn").forEach((btn) => {
           btn.addEventListener("click", (e) => {
@@ -955,6 +1098,7 @@
             const doorIndex = parseInt(doorDiv.getAttribute("data-door-index"));
             const unitIdForPassword = btn.getAttribute("data-unit-id");
             const correctPassword = passwords[unitIdForPassword];
+            const currentDoorTitle = doorDiv.querySelector(".door-title").textContent;
 
             if (btn.textContent.includes("Guardar")) {
               const newContent = doorContentDiv
@@ -962,226 +1106,118 @@
                 .value.split("\n")
                 .filter(Boolean)
                 .map((item) => item.trim());
+              
               units[unitId].doors[doorIndex].content = newContent;
               saveData();
               renderUnitPage(unitId);
             } else {
               const password = prompt(
-                "Por favor, ingrese la contraseña para editar:"
+                `Ingrese la contraseña para editar la puerta: ${currentDoorTitle}`
               );
               if (password === correctPassword) {
                 const currentContentText =
                   units[unitId].doors[doorIndex].content.join("\n");
                 doorContentDiv.innerHTML = `<textarea>${currentContentText}</textarea>`;
-                btn.innerHTML = '<i class="fas fa-save"></i> Guardar';
-                doorContentDiv.querySelector("textarea").focus();
+                btn.innerHTML = `<i class="fas fa-save"></i> Guardar`;
+                btn.style.backgroundColor = '#d32f2f'; // Rojo para Guardar
+                btn.style.color = '#ffffff';
               } else if (password !== null) {
-                alert("Contraseña incorrecta. No se puede editar.");
+                alert("Contraseña incorrecta.");
               }
             }
           });
         });
-
+        
         document.querySelectorAll(".download-btn").forEach((btn) => {
-          btn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            const doorDiv = btn.closest(".door");
-            const unitId = doorDiv.getAttribute("data-unit-id");
-            const doorIndex = parseInt(doorDiv.getAttribute("data-door-index"));
-            const unit = units[unitId];
-            const door = unit.doors[doorIndex];
-            downloadExcel(unit, door);
-          });
+            btn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const doorDiv = btn.closest(".door");
+                const doorIndex = parseInt(doorDiv.getAttribute("data-door-index"));
+                downloadUnitDoor(unitId, doorIndex);
+            });
         });
-        showFloatingButtons();
       }
 
       function renderDoorPage(unitId, doorIndex) {
-        const unit = units[unitId];
-        const door = unit.doors[doorIndex];
-        if (!unit || !door) {
-          renderUnitsList();
-          return;
-        }
-
-        document.title = `${door.title} - ${unit.name}`;
-        hideFloatingButtons(); // Oculta los botones flotantes en la vista de QR
-
-        app.innerHTML = `
-          <div class="back-button-container">
-            <button class="back-button" id="backBtn"><i class="fas fa-arrow-left"></i> Regresar</button>
-            <button class="home-button" id="homeBtn"><i class="fas fa-home"></i> Inicio</button>
-          </div>
-          <div class="qr-page-container">
-            <h2>${door.title}</h2>
-            <p><strong>Unidad:</strong> ${unit.name}</p>
-            <h3>Equipamiento:</h3>
-            <ul>
-              ${door.content.map((item) => `<li>${item}</li>`).join("")}
-            </ul>
-            <div class="qr-page-download-buttons">
-                <button id="downloadDoorBtn">
-                    <i class="fas fa-file-excel"></i> Descargar Puerta
-                </button>
-            </div>
-          </div>
-        `;
-
-        document.getElementById("backBtn").addEventListener("click", () => {
-          history.back();
-        });
-        
-        document.getElementById("homeBtn").addEventListener("click", () => {
-          renderUnitsList();
-          history.pushState({}, "", `#`);
-        });
-
-        document.getElementById("downloadDoorBtn").addEventListener("click", () => {
-            downloadExcel(unit, door);
-        });
-      }
-
-      function downloadExcel(unit, door) {
-        const data = [
-          ["Unidad", unit.name],
-          ["Puerta", door.title],
-          [],
-          ["Contenido"],
-        ];
-
-        door.content.forEach((item) => {
-          data.push([item]);
-        });
-
-        const ws = XLSX.utils.aoa_to_sheet(data);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Equipamiento");
-
-        const filename = `${unit.name.replace(/\s/g, "_")}_${door.title.replace(/\s/g, "_")}.xlsx`;
-        XLSX.writeFile(wb, filename);
-      }
-      
-      function downloadAllData(unitId) {
-        const currentUnit = units[unitId];
-        if (!currentUnit) {
-            alert("No se encontró la unidad para descargar.");
-            return;
-        }
-
-        const wb = XLSX.utils.book_new();
-        const unitData = [
-            ["Unidad", currentUnit.name],
-            ["Tipo", currentUnit.type],
-            ["Placa", currentUnit.specs.placa],
-            ["CBP", currentUnit.specs.cbp],
-            ["Modelo", currentUnit.specs.modelo],
-            ["Año", currentUnit.specs.ano],
-            ["Combustible", currentUnit.specs.combustible],
-            [],
-        ];
-
-        currentUnit.doors.forEach((door) => {
-            unitData.push(
-                [`Puerta: ${door.title}`],
-                ["Contenido"],
-                ...door.content.map((item) => [item]),
-                []
-            );
-        });
-
-        const ws = XLSX.utils.aoa_to_sheet(unitData);
-        XLSX.utils.book_append_sheet(wb, ws, currentUnit.name.substring(0, 31));
-
-        const filename = `${currentUnit.name.replace(/\s/g, "_")}.xlsx`;
-        XLSX.writeFile(wb, filename);
-      }
-      
-      function downloadAllUnitsData() {
-        const wb = XLSX.utils.book_new();
-
-        Object.keys(units).forEach(unitId => {
-            const currentUnit = units[unitId];
-            const unitData = [
-                ["Unidad", currentUnit.name],
-                ["Tipo", currentUnit.type],
-                ["Placa", currentUnit.specs.placa],
-                ["CBP", currentUnit.specs.cbp],
-                ["Modelo", currentUnit.specs.modelo],
-                ["Año", currentUnit.specs.ano],
-                ["Combustible", currentUnit.specs.combustible],
-                [],
-            ];
-
-            currentUnit.doors.forEach((door) => {
-                unitData.push(
-                    [`Puerta: ${door.title}`],
-                    ["Contenido"],
-                    ...door.content.map((item) => [item]),
-                    []
-                );
-            });
-
-            const ws = XLSX.utils.aoa_to_sheet(unitData);
-            const sheetName = currentUnit.name.replace(/\s/g, "_").substring(0, 31);
-            XLSX.utils.book_append_sheet(wb, ws, sheetName);
-        });
-
-        XLSX.writeFile(wb, "Inventario_Completo_Unidades_106.xlsx");
-      }
-
-      function handleUrlFragment() {
-        const hash = window.location.hash.substring(1);
-        const params = new URLSearchParams(hash);
-        const doorParam = params.get("door");
-        const unitParam = params.get("unit");
-
-        if (doorParam) {
-          showWelcomeMessage(1500); // Muestra la bienvenida por 1.5s
-          const [unitId, doorIndex] = doorParam.split("-");
-          if (unitId && doorIndex) {
-            renderDoorPage(unitId, parseInt(doorIndex));
-          } else {
-            renderUnitsList();
+          const unit = units[unitId];
+          const door = unit ? unit.doors[doorIndex] : null;
+          
+          if (!door || !unit) {
+              // Si no encuentra la puerta, regresa a la lista de unidades.
+              renderUnitsList();
+              history.replaceState({}, "", `#`);
+              return;
           }
-        } else if (unitParam) {
-          renderUnitPage(unitParam);
+          
+          document.title = `${door.title} - ${unit.name}`;
+          hideFloatingButtons();
+
+          const qrSrc = generateQR(unitId, doorIndex);
+          
+          app.innerHTML = `
+              <div class="back-button-container">
+                  <button class="back-button" id="backFromQRBtn"><i class="fas fa-arrow-left"></i> Volver a ${unit.name}</button>
+              </div>
+              <div class="qr-page-container" id="qrPageContent">
+                  <h2>Inventario de ${unit.name}</h2>
+                  <h3>${door.title}</h3>
+                  <div style="text-align: center; margin-bottom: 20px;">
+                      <img src="${qrSrc}" alt="Código QR ${door.title}" style="max-width: 150px; margin-bottom: 10px;"/>
+                      <p class="qr-text" style="font-size: 0.95rem; color: var(--color-azul-marino);">Escanee el código para acceder rápidamente al inventario.</p>
+                  </div>
+                  <ul style="list-style-type: none; padding: 0;">
+                      ${door.content.map((item) => `<li style="border-bottom: 1px dashed #ddd; padding: 5px 0;"><i class="fas fa-toolbox" style="color: var(--color-rojo-bombero); margin-right: 8px;"></i>${item}</li>`).join("")}
+                  </ul>
+                  <div class="qr-page-download-buttons">
+                      <button id="downloadDoorBtn"><i class="fas fa-file-excel"></i> Descargar Puerta</button>
+                      <button id="downloadUnitBtn"><i class="fas fa-file-excel"></i> Descargar Unidad Completa</button>
+                  </div>
+              </div>
+          `;
+
+          document.getElementById("backFromQRBtn").addEventListener("click", () => {
+              renderUnitPage(unitId);
+              history.pushState({ unitId }, "", `#unit=${unitId}`);
+          });
+
+          document.getElementById("downloadDoorBtn").addEventListener("click", () => {
+              downloadUnitDoor(unitId, doorIndex);
+          });
+          
+          document.getElementById("downloadUnitBtn").addEventListener("click", () => {
+              downloadUnitInventory(unitId);
+          });
+      }
+
+      // --- LÓGICA DE NAVEGACIÓN Y ESTADO ---
+      function handleHashChange() {
+        const hash = window.location.hash.substring(1); // Eliminar el '#'
+        
+        if (hash.startsWith("unit=")) {
+          const unitId = hash.substring(5);
+          renderUnitPage(unitId);
+        } else if (hash.startsWith("door=")) {
+            const parts = hash.substring(5).split('-');
+            const unitId = parts[0];
+            const doorIndex = parseInt(parts[1]);
+            renderDoorPage(unitId, doorIndex);
         } else {
           renderUnitsList();
         }
       }
 
-      window.addEventListener("hashchange", handleUrlFragment);
-
-      floatingDownloadBtn.addEventListener("click", () => {
-          const hash = window.location.hash.substring(1);
-          const params = new URLSearchParams(hash);
-          const unitId = params.get("unit");
-          const doorId = params.get("door");
-
-          if (unitId) {
-            downloadAllData(unitId);
-          } else if (doorId) {
-            const [unitIdFromDoor] = doorId.split("-");
-            downloadAllData(unitIdFromDoor);
-          } else {
-              alert("Por favor, navega a una unidad o puerta para descargar su inventario completo.");
-          }
-      });
-      
-      floatingDownloadAllBtn.addEventListener("click", () => {
-          downloadAllUnitsData();
-      });
-
-      function init() {
-        if (window.location.hash === '') {
-            showWelcomeMessage(2500); // Muestra la bienvenida inicial por 2.5s
-        }
-
+      // --- INICIALIZACIÓN ---
+      document.addEventListener("DOMContentLoaded", () => {
         loadData();
-        handleUrlFragment();
-      }
-
-      init();
+        // Muestra el mensaje de bienvenida al cargar la página.
+        showWelcomeMessage(1500); 
+        
+        // Maneja la navegación inicial
+        handleHashChange(); 
+        
+        window.addEventListener("popstate", handleHashChange);
+        window.addEventListener("hashchange", handleHashChange);
+      });
     </script>
   </body>
 </html>
